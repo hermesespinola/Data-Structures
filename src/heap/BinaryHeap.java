@@ -1,30 +1,36 @@
+package heap;
+
+import java.lang.RuntimeException;
+
+@SuppressWarnings("rawtypes")
 public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
 
   private HeapType heapType;
   private int size;
   public static final int DEF_SIZE = 100;
   private V[] heap;
-  private int lenght;
+  private int length;
 
   public BinaryHeap(HeapType heapType) {
-    this(DEF_SIZE, initialSize);
+    this(DEF_SIZE, heapType);
   }
 
+  @SuppressWarnings("unchecked")
   public BinaryHeap(int initialSize, HeapType heapType) {
     this.heapType = heapType;
-    this.heap = new V[initialSize];
-    this.lenght = 0;
+    this.heap = (V[]) new Comparable[initialSize];
+    this.length = 0;
   }
 
   public BinaryHeap(V[] values, HeapType heapType) {
-    this(DEF_SIZE + values.lenght, heapType);
+    this(DEF_SIZE + values.length, heapType);
     for (V v : values) {
-      this.add(v);
+      this.insert(v);
     }
   }
 
   protected void heapifyUp(int i) {
-    if (i <= 0) throw new IndexOutOfBoundsException();
+    if (i < 0 || i >= this.length) throw new IndexOutOfBoundsException();
     if (heapType == HeapType.MaxHeap)
       maxHeapifyUp(i);
     else
@@ -33,12 +39,14 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
 
   private void maxHeapifyUp(int i) {
     do {
-      int cmp = this.heap[i].compareTo(this.heap[i/2]);
+      int parent = i/2;
+      int cmp = this.heap[i].compareTo(this.heap[parent]);
       if (cmp > 0)
-        shift(i, i/2);
+        shift(this.heap, i, parent);
       else
         break;
-    } while (i/=2 > 0);
+      i = parent;
+    } while (i > 0);
   }
 
   private void minHeapifyUp(int i) {
@@ -46,14 +54,15 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
       int parent = i/2;
       int cmp = this.heap[i].compareTo(this.heap[parent]);
       if (cmp < 0)
-        shift(i, parent);
+        shift(this.heap, i, parent);
       else
         break;
-    } while (i==parent > 0);
+      i = parent;
+    } while (i > 0);
   }
 
   protected void heapifyDown(int i) {
-    if (i >= this.lenght) throw new IndexOutOfBoundsException();
+    if (i < 0 || i >= this.length) throw new IndexOutOfBoundsException();
     if (heapType == HeapType.MaxHeap)
       maxHeapifyDown(i);
     else
@@ -62,62 +71,65 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
 
   private void maxHeapifyDown(int i) {
     do {
-      int left = i/2;
+      int left = (i + 1)*2 - 1;
       int right = left + 1;
       int path = left;
       if (this.heap[left].compareTo(this.heap[i]) > 0) {
-        shift(i, left);
+        shift(this.heap, i, left);
       } else if (this.heap[right].compareTo(this.heap[i]) > 0) {
-        shift(i, right);
+        shift(this.heap, i, right);
         path = right;
       } else break;
-    } while (i==path < this.lenght);
+      i = path;
+    } while (i < this.length/2);
   }
 
   private void minHeapifyDown(int i) {
     do {
-      int left = i/2;
+      int left = (i + 1)*2 - 1;
       int right = left + 1;
       int path = left;
       if (this.heap[left].compareTo(this.heap[i]) < 0) {
-        shift(i, left);
+        shift(this.heap, i, left);
       } else if (this.heap[right].compareTo(this.heap[i]) < 0) {
-        shift(i, right);
+        shift(this.heap, i, right);
         path = right;
       } else break;
-    } while (i==path < this.lenght);
+      i = path;
+    } while (i < this.length/2);
   }
 
-  private void shift(int i, int j) {
-    V tmp = this.heap[i];
-    this.heap[j] = this.heap[i];
-    this.heap[i] = tmp;
+  private static final <V> void shift(V[] heap, int i, int j) {
+    V tmp = heap[i];
+    heap[i] = heap[j];
+    heap[j] = tmp;
   }
 
+  @SuppressWarnings("unchecked")
   private void resize() {
-    V[] newHeap = new V[heap.lenght * 2];
-    System.arraycopy(this.heap, 0, newHeap, 0, this.heap.lenght);
+    V[] newHeap = (V[]) new Comparable[heap.length * 2];
+    System.arraycopy(this.heap, 0, newHeap, 0, this.heap.length);
   }
 
-  public void add(V value) {
+  public void insert(V value) {
     if (this.isFull()) {
       this.resize();
     }
-    this.heap[this.lenght] = value;
-    heapifyUp(this.lenght);
-    this.lenght++;
+    this.heap[this.length] = value;
+    heapifyUp(this.length++);
   }
 
+  @SuppressWarnings("unchecked")
   public void clear() {
-    this.heap = new V[this.heap.lenght];
+    this.heap = (V[]) new Comparable[this.heap.length];
   }
 
   public boolean isEmpty() {
-    return this.lenght == 0;
+    return this.length == 0;
   }
 
   public boolean isFull() {
-    return this.lenght == this.heap.lenght;
+    return this.length == this.heap.length;
   }
 
   public V peek() {
@@ -125,27 +137,40 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
   }
 
   public V pop() {
-    if (this.lenght <= 0)
-      throw new EmptyHeapException();
-    this.lenght--;
-    shift(0, this.lenght);
-    heapifyDown(0);
-    V r = this.heap[this.lenght];
-    this.heap[this.lenght] = null;
+    if (this.length <= 0)
+      throw new RuntimeException("Empty Heap");
+    this.length--;
+    if (this.length > 1) {
+      shift(this.heap, 0, this.length);
+      heapifyDown(0);
+    }
+    V r = this.heap[this.length];
+    this.heap[this.length] = null;
     return r;
   }
 
   public int size() {
-    return this.lenght - 1;
+    return this.length - 1;
   }
 
   public String toString() {
-    return "Lol";
+    StringBuilder sb = new StringBuilder("[ ");
+    for (int i = 0; i < this.length; i++) {
+      sb.append(heap[i]).append(' ');
+    } sb.append(']');
+    return sb.toString();
   }
-
 
   public enum HeapType {
     MaxHeap,
     MinHeap
+  }
+
+  public static void main(String[] args) {
+    BinaryHeap<Integer> heap = new BinaryHeap<Integer>(new Integer[] {3, 4, 3, 5, 6, 8, 9, 2, 1, 7}, HeapType.MaxHeap);
+    System.out.println(heap);
+    while (!heap.isEmpty()) {
+      System.out.println(heap.pop());
+    }
   }
 }

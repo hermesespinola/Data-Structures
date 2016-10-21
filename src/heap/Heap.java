@@ -1,7 +1,8 @@
+package heap;
+
 import java.util.Iterator;
 
 public interface Heap <V> {
-  public boolean add(V value);
   public void clear();
   public void insert(V value);
   public boolean isEmpty();
