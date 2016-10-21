@@ -1,4 +1,6 @@
-abstract class KeyValueNode<K, V> extends Node<V> {
+package node;
+
+public class KeyValueNode<K, V> extends Node<V> {
   K key;
 
   public KeyValueNode(K key, V val) {

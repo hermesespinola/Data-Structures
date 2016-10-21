@@ -1,4 +1,4 @@
-package structures;
+package node;
 
 abstract class Node<T> {
   T value;
