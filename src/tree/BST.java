@@ -11,10 +11,17 @@ import tree.Tree;
 import tree.TreeIterator;
 
 @SuppressWarnings("rawtypes")
-public class BST <K extends Comparable<K>, V> implements Tree<K, V> {
-  protected static class BSTNode<K extends Comparable<K>, V> extends BinaryTreeNode<K, V> {
+public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
+  BSTNode<K, V> root;
+
+  protected static class BSTNode<K extends Comparable<? super K>, V> extends BinaryTreeNode<K, V> implements Comparable<BSTNode<K,V>> {
     protected BSTNode(K key, V val, BSTNode<K, V> left, BSTNode<K, V> right) {
       super(key, val, left, right);
+    }
+
+    @Override
+    public int compareTo(BSTNode<K,V> other) {
+      return this.key.compareTo(other.key);
     }
 
     protected V get(K other) {
@@ -138,8 +145,6 @@ public class BST <K extends Comparable<K>, V> implements Tree<K, V> {
       return 1 + Math.max(lh, rh);
     }
   }
-
-  BSTNode<K, V> root;
 
   public BST() {
     this.root = null;
