@@ -5,10 +5,10 @@ import node.BinaryTreeNode;
 import java.util.Iterator;
 
 public class TreeIterator<K, V> implements Iterator<V> {
-  Stack<Tree<K, V>> stack;
+  Stack<BinaryTreeNode<K, V>> stack;
 
-  public TreeIterator(Tree<K, V> root) {
-    stack = new Stack<Tree<K, V>>();
+  public TreeIterator(BinaryTreeNode<K, V> root) {
+    stack = new Stack<BinaryTreeNode<K, V>>();
     while (root != null) {
       stack.push(root);
       root = root.left();
@@ -20,8 +20,8 @@ public class TreeIterator<K, V> implements Iterator<V> {
   }
 
   public V next() {
-    Tree<K, V> node = stack.pop();
-    V result = node.value();
+    BinaryTreeNode<K, V> node = stack.pop();
+    V result = node.getValue();
     if (node.right() != null) {
       node = node.right();
       while (node != null) {

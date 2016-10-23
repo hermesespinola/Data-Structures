@@ -1,6 +1,6 @@
 package node;
 
-public class BinaryTreeNode<K extends Comparable<K>, V> extends KeyValueNode<K, V> {
+public class BinaryTreeNode<K, V> extends KeyValueNode<K, V> {
   BinaryTreeNode<K, V> left;
   BinaryTreeNode<K, V> right;
 
@@ -16,5 +16,13 @@ public class BinaryTreeNode<K extends Comparable<K>, V> extends KeyValueNode<K, 
 
   public BinaryTreeNode<K, V> right() {
     return this.right;
+  }
+
+  public void setLeft(BinaryTreeNode<K, V> newLeft) {
+    this.left = newLeft;
+  }
+
+  public void setRight(BinaryTreeNode<K, V> newRight) {
+    this.right = newRight;
   }
 }

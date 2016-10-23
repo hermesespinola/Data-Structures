@@ -1,7 +1,7 @@
 package node;
 
 public class KeyValueNode<K, V> extends Node<V> {
-  K key;
+  protected K key;
 
   public KeyValueNode(K key, V val) {
     super(val);
@@ -12,7 +12,7 @@ public class KeyValueNode<K, V> extends Node<V> {
     this.key = key;
   }
 
-  protected K getKey() {
+  public K getKey() {
     return this.key;
   }
 }
