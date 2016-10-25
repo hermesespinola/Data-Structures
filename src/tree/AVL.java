@@ -110,13 +110,13 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     if (key.compareTo(node.getKey()) < 0) {
 
       node.setLeft(remove(key, node.left()));
-      if (node.right() != null && node.right().height - nodeHeight(node.left()) >= 2) {
+      if (nodeHeight(node.right()) - nodeHeight(node.left()) >= 2) {
         int rightHeight = nodeHeight(node.right().right());
         int leftHeight = nodeHeight(node.right().left());
 
         // TODO: check this shit
         if (rightHeight >= leftHeight) {
-          node = singleRightRotation(node);
+          node = singleLeftRotation(node);
         } else {
           node = doubleLeftRotation(node);
         }
@@ -125,13 +125,13 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     } else if (key.compareTo(node.getKey()) > 0) {
 
       node.setRight(remove(key, node.right()));
-      if (node.left() != null && node.left().height - nodeHeight(node.right()) >= 2) {
+      if (nodeHeight(node.left()) - nodeHeight(node.right()) >= 2) {
         int leftHeight = nodeHeight(node.left().left());
         int rightHeight = nodeHeight(node.left().right());
 
         // TODO: check this shit
-        if (rightHeight >= leftHeight) {
-          node = singleLeftRotation(node);
+        if (leftHeight >= rightHeight) {
+          node = singleRightRotation(node);
         } else {
           node = doubleRightRotation(node);
         }
@@ -141,14 +141,14 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
       AVLNode<K,V> greaterLeft = greater(node.left());
       node.setValue(greaterLeft.getValue());
       node.setKey(greaterLeft.getKey());
-      node.setLeft(remove(node.getKey(), node.left()));
 
-      if (node.right() != null && node.right().height - node.left().height >= 2) {
+      node.setLeft(remove(greaterLeft.getKey(), node.left()));
+      if (nodeHeight(node.right()) - nodeHeight(node.left()) >= 2) {
         int rightHeight = nodeHeight(node.right().right());
         int leftHeight = nodeHeight(node.right().left());
         // TODO: check this shit
         if (rightHeight >= leftHeight) {
-          node = singleRightRotation(node);
+          node = singleLeftRotation(node);
         } else {
           node = doubleLeftRotation(node);
         }
@@ -286,7 +286,7 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
 
     System.out.println(avl);
     System.out.println(avl.levelOrder());
-    
+
     System.out.println();
     avl.remove(6);
     System.out.println("Remove 6");
@@ -308,6 +308,60 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     System.out.println();
     avl.remove(2);
     System.out.println("Remove 2");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(5);
+    System.out.println("Remove 5");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-1);
+    System.out.println("Remove -1");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(0);
+    System.out.println("Remove 0");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-1);
+    System.out.println("Remove -1");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-4);
+    System.out.println("Remove -4");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-4);
+    System.out.println("Remove -4");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(3);
+    System.out.println("Remove 3");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(1);
+    System.out.println("Remove 1");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-3);
+    System.out.println("Remove -3");
     System.out.println(avl);
     System.out.println(avl.levelOrder());
   }

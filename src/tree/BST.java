@@ -202,7 +202,7 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
   }
 
   public String inOrder() {
-    return root != null ? inOrder(new StringBuilder()).toString() : "Empty tree";
+    return root == null ? "Empty tree" : inOrder(new StringBuilder()).toString();
   }
 
   protected StringBuilder preOrder(StringBuilder result) {
@@ -210,7 +210,7 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
   }
 
   public String preOrder() {
-    return preOrder(new StringBuilder()).toString();
+    return root == null ? "Empty tree" :  preOrder(new StringBuilder()).toString();
   }
 
   protected StringBuilder postOrder(StringBuilder result) {
@@ -218,10 +218,13 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
   }
 
   public String postOrder() {
-    return postOrder(new StringBuilder()).toString();
+    return root == null ? "Empty tree" : postOrder(new StringBuilder()).toString();
   }
 
   public String preOrderIt() {
+    if (root == null) {
+      return "Empty tree";
+    }
     StringBuilder result = new StringBuilder();
     Stack<BSTNode<K, V>> nodeStack = new Stack<BSTNode<K, V>> ();
 
@@ -238,6 +241,9 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
   }
 
   public String levelOrder() {
+    if (root == null) {
+      return "Empty tree";
+    }
     Queue<BSTNode<K,V>> currentLevel = new LinkedList<>();
     StringBuilder result = new StringBuilder();
     BSTNode<K, V> node = null;
