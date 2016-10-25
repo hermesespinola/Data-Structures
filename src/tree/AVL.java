@@ -41,45 +41,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
   }
 
   /*
-  * iterative version of method add
-  * @param key The key of the new node.
-  * @param val The value of the new node
-  */
-  // TODO: fix this (set the values of nodes)
-  @Override
-  public void put(K key, V val) {
-    Stack<AVLNode<K,V>> path = new Stack<>();
-    path.push((AVLNode<K,V>)root);
-    AVLNode<K, V> current = (AVLNode<K,V>)root;
-    while (!path.empty()) {
-      if (current == null)
-        current = new AVLNode<K,V>(key, val);
-      else if (key.compareTo(current.getKey()) < 0) {
-        path.push(current.left());
-        if (nodeHeight(current.left()) - nodeHeight(current.right()) == 2)
-          if (key.compareTo(current.left().getKey()) < 0)
-            current = singleRightRotation(current);
-          else
-            current = doubleRightRotation(current);
-
-      } else if (key.compareTo(current.getKey()) > 0) {
-
-        path.push(current.right());
-        if (nodeHeight(current.right()) - nodeHeight(current.left()) == 2)
-          if (key.compareTo(current.right().getKey()) < 0)
-            current = singleLeftRotation(current);
-          else
-            current = doubleLeftRotation(current);
-
-      } else {
-        current.setValue(val);
-      }
-      current.height = Math.max(nodeHeight(current.left()), nodeHeight(current.right())) + 1;
-      current = path.pop();
-    }
-  }
-
-  /*
   * Recursively add a new node to the AVL tree.
   * @param key The key of the new node.
   * @param val The value of the new node
