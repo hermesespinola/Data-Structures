@@ -8,7 +8,7 @@ public class KeyValueNode<K, V> extends Node<V> {
     this.key = key;
   }
 
-  protected void setKey(K key) {
+  public void setKey(K key) {
     this.key = key;
   }
 

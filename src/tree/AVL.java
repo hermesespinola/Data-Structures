@@ -1,13 +1,13 @@
 package tree;
 
 import java.util.Stack;
+import node.BinaryTreeNode;
 
 /*
 * Implementation of an AVL tree extending a binary search tree with key value pairs.
 */
+@SuppressWarnings("rawtypes")
 public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
-  AVLNode<K,V> root;
-
   private static class AVLNode<K extends Comparable<? super K>, V> extends BSTNode<K, V> {
     protected int height;
 
@@ -37,19 +37,20 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
   }
 
   public AVL(K rootKey, V rootValue) {
-    this.root = new AVLNode<K,V>(rootKey, rootValue);
+    super(rootKey, rootValue);
   }
 
   /*
   * iterative version of method add
-  * @param key The key of the new Node.
+  * @param key The key of the new node.
   * @param val The value of the new node
   */
+  // TODO: fix this (set the values of nodes)
   @Override
   public void put(K key, V val) {
     Stack<AVLNode<K,V>> path = new Stack<>();
-    path.push(root);
-    AVLNode<K, V> current = root;
+    path.push((AVLNode<K,V>)root);
+    AVLNode<K, V> current = (AVLNode<K,V>)root;
     while (!path.empty()) {
       if (current == null)
         current = new AVLNode<K,V>(key, val);
@@ -80,19 +81,104 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
 
   /*
   * Recursively add a new node to the AVL tree.
-  * @param key The key of the new Node.
+  * @param key The key of the new node.
   * @param val The value of the new node
   */
   @Override
   public void add(K key, V val) {
-    this.root = add(key, val, root);
+    this.root = add(key, val, root());
+  }
+
+  /*
+  * Recursively remove the node with the specified key and rebalance the tree.
+  * @param key The key of the node to remove.
+  */
+  @Override
+  public void remove(K key) {
+    root = remove(key, root());
+  }
+
+  /*
+  * The actual remove method
+  * @param key The key of the node to remove.
+  * @param node root of the where the child node is to be deleted.
+  */
+  @SuppressWarnings("unchecked")
+  protected AVLNode<K,V> remove(K key, AVLNode<K,V> node) {
+    if (node == null)
+      return null;
+    if (key.compareTo(node.getKey()) < 0) {
+
+      node.setLeft(remove(key, node.left()));
+      if (node.right() != null && node.right().height - nodeHeight(node.left()) >= 2) {
+        int rightHeight = nodeHeight(node.right().right());
+        int leftHeight = nodeHeight(node.right().left());
+
+        // TODO: check this shit
+        if (rightHeight >= leftHeight) {
+          node = singleRightRotation(node);
+        } else {
+          node = doubleLeftRotation(node);
+        }
+      }
+
+    } else if (key.compareTo(node.getKey()) > 0) {
+
+      node.setRight(remove(key, node.right()));
+      if (node.left() != null && node.left().height - nodeHeight(node.right()) >= 2) {
+        int leftHeight = nodeHeight(node.left().left());
+        int rightHeight = nodeHeight(node.left().right());
+
+        // TODO: check this shit
+        if (rightHeight >= leftHeight) {
+          node = singleLeftRotation(node);
+        } else {
+          node = doubleRightRotation(node);
+        }
+      }
+
+    } else if (node.left() != null) { // key == node.key (remove this node)
+      AVLNode<K,V> greaterLeft = greater(node.left());
+      node.setValue(greaterLeft.getValue());
+      node.setKey(greaterLeft.getKey());
+      node.setLeft(remove(node.getKey(), node.left()));
+
+      if (node.right() != null && node.right().height - node.left().height >= 2) {
+        int rightHeight = nodeHeight(node.right().right());
+        int leftHeight = nodeHeight(node.right().left());
+        // TODO: check this shit
+        if (rightHeight >= leftHeight) {
+          node = singleRightRotation(node);
+        } else {
+          node = doubleLeftRotation(node);
+        }
+      }
+    } else {
+      node = node.left() != null ? node.left() : node.right();
+    }
+
+    // update the current node height
+    if (node != null)
+      node.height = Math.max(nodeHeight(node.left()), nodeHeight(node.right())) + 1;
+
+    return node;
+  }
+
+  @SuppressWarnings("unchecked")
+  public static AVLNode greater(BinaryTreeNode root) {
+    return (root.right() == null) ? (AVLNode)root : lesser(root.right());
+  }
+
+  @SuppressWarnings("unchecked")
+  public static AVLNode lesser(BinaryTreeNode root) {
+    return (root.left() == null) ? (AVLNode)root : lesser(root.left());
   }
 
   /*
   * The actual add method.
   * @param key The key of the new Node.
-  * @param node root of the where the node is to be added.
   * @param val The value of the new node.
+  * @param node root of the where the node is to be added.
   * @return the new root of the tree.
   */
   protected AVLNode<K,V> add(K key, V val, AVLNode<K,V> node) {
@@ -101,7 +187,7 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     else if (key.compareTo(node.getKey()) < 0) {
 
       node.setLeft(add(key, val, node.left()));
-      if (node.left().height - node.right().height == 2)
+      if (nodeHeight(node.left()) - nodeHeight(node.right()) == 2)
         if (key.compareTo(node.left().getKey()) < 0)
           node = singleRightRotation(node);
         else
@@ -110,7 +196,7 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     } else if (key.compareTo(node.getKey()) > 0) {
 
       node.setRight(add(key, val, node.right()));
-      if (node.right().height - node.left().height == 2)
+      if (nodeHeight(node.right()) - nodeHeight(node.left()) == 2)
         if (key.compareTo(node.right().getKey()) > 0)
           node = singleLeftRotation(node);
         else
@@ -124,7 +210,7 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
 
   @SuppressWarnings("rawtypes")
   protected static int nodeHeight(AVLNode node) {
-    return node != null ? node.height : 0;
+    return node != null ? node.height : - 1;
   }
 
   /*
@@ -177,5 +263,52 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
   private AVLNode<K,V> doubleLeftRotation(AVLNode<K,V> x) {
     x.setRight(singleRightRotation(x.right()));
     return singleLeftRotation(x);
+  }
+
+  public AVLNode<K,V> root() {
+    return (AVLNode<K,V>)root;
+  }
+
+  public static void main(String[] args) {
+    AVL<Integer, String> avl = new AVL<>();
+
+    avl.add(2, "Dos");
+    avl.add(1, "Uno");
+    avl.add(4, "Cuatro");
+    avl.add(3, "Tres");
+    avl.add(6, "Seis");
+    avl.add(5, "Cinco");
+    avl.add(-2, "-Dos");
+    avl.add(-4, "-Cuatro");
+    avl.add(-3, "-Tres");
+    avl.add(-1, "-Uno");
+    avl.add(0, "Cero");
+
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+    
+    System.out.println();
+    avl.remove(6);
+    System.out.println("Remove 6");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(-2);
+    System.out.println("Remove -2");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(4);
+    System.out.println("Remove 4");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
+
+    System.out.println();
+    avl.remove(2);
+    System.out.println("Remove 2");
+    System.out.println(avl);
+    System.out.println(avl.levelOrder());
   }
 }

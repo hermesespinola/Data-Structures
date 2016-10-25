@@ -24,6 +24,10 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
       return this.key.compareTo(other.key);
     }
 
+    public String toString() {
+      return this.getKey() + ": " + this.getValue();
+    }
+
     protected V get(K other) {
       int cmp = other.compareTo(this.key);
       if (cmp < 0)
@@ -67,16 +71,16 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
       return (BSTNode<K,V>)super.right();
     }
 
-    protected V remove(K other) {
+    @SuppressWarnings("unchecked")
+    protected void remove(K other) {
       // get the parent of and the node such that node.key == key
       BSTNode<K,V> parent = parentOf(other);
-      if (parent == null) return null;
+      if (parent == null) return;
       boolean isChildLeftTree = parent.left() != null && parent.left().getKey() == key;
       BSTNode<K,V> node = isChildLeftTree ? parent.left() : parent.right();
-      V v = node.getValue();
 
       if (node.right() != null && node.left() != null) {
-        BSTNode<K,V> substitute = node.left().greater();
+        BSTNode<K,V> substitute = greater(node.left());
         node.key = substitute.key;
         node.setValue(substitute.getValue());
         node.left().remove(substitute.key);
@@ -87,8 +91,6 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
         if (isChildLeftTree) parent.setLeft(node.right());
         else parent.setRight(node.right());
       }
-
-      return v;
     }
 
     protected BSTNode<K,V> parentOf(K other) {
@@ -100,16 +102,6 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
       if (right().getKey() == key) return this;
       else return right().parentOf(key);
       return null; // no such key in the tree
-    }
-
-    public BSTNode<K,V> greater() {
-      if (right() == null) return this;
-      return right().greater();
-    }
-
-    public BSTNode<K,V> lesser() {
-      if (left() == null) return this;
-      return right().lesser();
     }
 
     protected BSTNode<K,V> subTreeGreaterThan(K other) {
@@ -185,12 +177,20 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
     }
   }
 
+  public static BSTNode greater(BinaryTreeNode root) {
+    return (root.right() == null) ? (BSTNode)root : lesser(root.right());
+  }
+
+  public static BSTNode lesser(BinaryTreeNode root) {
+    return (root.left() == null) ? (BSTNode)root : lesser(root.left());
+  }
+
   public void add(K key, V val) {
     root.add(key, val);
   }
 
-  public V remove(K key) {
-    return root.remove(key);
+  public void remove(K key) {
+    root.remove(key);
   }
 
   public boolean contains(K key) {
@@ -202,7 +202,7 @@ public class BST <K extends Comparable<? super K>, V> implements Tree<K, V> {
   }
 
   public String inOrder() {
-    return inOrder(new StringBuilder()).toString();
+    return root != null ? inOrder(new StringBuilder()).toString() : "Empty tree";
   }
 
   protected StringBuilder preOrder(StringBuilder result) {
