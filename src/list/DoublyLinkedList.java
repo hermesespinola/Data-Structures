@@ -2,11 +2,12 @@ package list;
 
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import node.DoublyLinkedNode;
 
 public class DoublyLinkedList<T> implements List<T>  {
   int size;
-  DNode<T> first;
-  DNode<T> last;
+  DoublyLinkedNode<T> first;
+  DoublyLinkedNode<T> last;
 
   public DoublyLinkedList() {
     this.first = null;
@@ -39,35 +40,35 @@ public class DoublyLinkedList<T> implements List<T>  {
 
   public T get(int index) {
     checkIndex(index);
-    return getNode(index).value;
+    return getNode(index).getValue();
   }
 
-  private DNode<T> getNode(int index) {
-    DNode<T> n = this.first;
+  private DoublyLinkedNode<T> getNode(int index) {
+    DoublyLinkedNode<T> n = this.first;
     while (index > 0) {
-      n = n.next;
+      n = n.next();
       index--;
     }
     return n;
   }
 
   private void addFirst(T value) {
-    DNode<T> newNode = new DNode<T>(null, value, this.first);
+    DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(value, this.first);
     if (this.empty()) {
       this.last = newNode;
     } else {
-      this.first.prev = newNode;
+      this.first.setPrevious(newNode);
     }
     this.first = newNode;
     this.size++;
   }
 
   private void addLast(T value) {
-    DNode<T> newNode = new DNode<T>(this.last, value, null);
+    DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(value, null, this.last);
     if (this.empty()) {
       this.first = newNode;
     } else {
-      this.last.next = newNode;
+      this.last.setNext(newNode);
     }
     this.last = newNode;
     this.size++;
@@ -79,21 +80,21 @@ public class DoublyLinkedList<T> implements List<T>  {
 
   public T remove(int index) {
     checkIndex(index);
-    DNode<T> toRemove = getNode(index);
-    toRemove.prev.next = toRemove.next;
-    toRemove.next.prev = toRemove.prev;
+    DoublyLinkedNode<T> toRemove = getNode(index);
+    toRemove.previous().setNext(toRemove.next());
+    toRemove.next().setPrevious(toRemove.previous());
     size--;
-    T r = toRemove.value;
+    T r = toRemove.getValue();
     toRemove = null;
     return r;
   }
 
   public void add(int index, T element) {
     checkIndex(index);
-    DNode<T> nextNode = getNode(index);
-    DNode<T> newNode = new DNode<T>(nextNode.prev, element, nextNode);
-    nextNode.prev.next = newNode;
-    nextNode.prev = newNode;
+    DoublyLinkedNode<T> nextNode = getNode(index);
+    DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(element, nextNode, nextNode.previous());
+    nextNode.previous().setNext(newNode);
+    nextNode.setPrevious(newNode);
     size++;
   }
 
@@ -102,38 +103,24 @@ public class DoublyLinkedList<T> implements List<T>  {
   }
 
   public String toString() {
-    StringBuilder sb = new StringBuilder('[');
-    DNode<T> node = this.first;
+    StringBuilder sb = new StringBuilder("[ ");
+    DoublyLinkedNode<T> node = this.first;
     while (node != null) {
-      sb.append(" [");
-      sb.append(node.value);
-      sb.append("] ");
-      node = node.next;
+      sb.append(node.getValue()).append(' ');
+      node = node.next();
     }
     sb.append(']');
     return sb.toString();
   }
 
-  private static class DNode<T> {
-    T value;
-    DNode<T> next;
-    DNode<T> prev;
-
-    public DNode(DNode<T> prev, T value, DNode<T> next) {
-      this.value = value;
-      this.prev = prev;
-      this.next = next;
-    }
-  }
-
   class DoublyLinkedListIterator implements ListIterator<T> {
-    DNode<T> next;
-    DNode<T> ultimoVisitado = null;
-    int nextIndex;
+    DoublyLinkedNode<T> next;
+    DoublyLinkedNode<T> lastVisited = null;
+    int nIndex;
 
     public DoublyLinkedListIterator() {
       this.next = first;
-      this.nextIndex = 0;
+      this.nIndex = 0;
     }
 
     public DoublyLinkedListIterator(int index) {
@@ -142,7 +129,7 @@ public class DoublyLinkedList<T> implements List<T>  {
       } else {
         this.next = getNode(index);
       }
-      this.nextIndex = index;
+      this.nIndex = index;
     }
 
     public void add(T el){};
@@ -150,11 +137,11 @@ public class DoublyLinkedList<T> implements List<T>  {
     public void remove(T el){};
     public void remove(){};
     public int previousIndex() {
-      return this.nextIndex - 1;
+      return this.nIndex - 1;
     }
 
     public int nextIndex() {
-      return this.nextIndex;
+      return this.nIndex;
     }
 
     public T previous() {
@@ -163,19 +150,19 @@ public class DoublyLinkedList<T> implements List<T>  {
       if (this.next == null)
         this.next = last;
       else
-        this.next = this.next.prev;
+        this.next = this.next.previous();
 
-      this.ultimoVisitado = this.next;
-      this.nextIndex--;
-      return ultimoVisitado.value;
+      this.lastVisited = this.next;
+      this.nIndex--;
+      return lastVisited.getValue();
     }
 
     public T next() {
       if (this.hasNext()) {
-        ultimoVisitado = this.next;
-        this.nextIndex++;
-        this.next = this.next.next;
-        return this.ultimoVisitado.value;
+        lastVisited = this.next;
+        this.nIndex++;
+        this.next = this.next.next();
+        return this.lastVisited.getValue();
       }
       else throw new NoSuchElementException();
     }
@@ -185,7 +172,7 @@ public class DoublyLinkedList<T> implements List<T>  {
     }
 
     public boolean hasPrevious() {
-      return this.nextIndex > 0;
+      return this.nIndex > 0;
     }
   }
 }
