@@ -4,7 +4,7 @@ import java.util.ListIterator;
 import list.DoublyLinkedList;
 import node.Node;
 
-class SparseMatrix<T> {
+class SparseMatrix<T> implements Matrix<T> {
   private int numCols;
   private int numRows;
 	private T zero;
@@ -62,6 +62,7 @@ class SparseMatrix<T> {
 		return this.zero;
 	}
 
+  // TODO: fix error, deleting almost the whole matrix
 	public T remove(int i, int j) {
 		checkIndexes(i, j);
 		ListIterator<SparseNode<T>> itr = ch.iterator();
@@ -85,11 +86,11 @@ class SparseMatrix<T> {
     return sb.toString();
 	}
 
-	public int columns() {
+	public int numColumns() {
 		return this.numCols;
 	}
 
-	public int rows() {
+	public int numRows() {
 		return this.numRows;
 	}
 
