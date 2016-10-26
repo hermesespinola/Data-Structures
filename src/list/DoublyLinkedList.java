@@ -74,32 +74,49 @@ public class DoublyLinkedList<T> implements List<T>  {
     this.size++;
   }
 
+  // TODO: implement!!!
   public int indexOf(T x) {
+    DoublyLinkedNode<T> currentNode = this.first;
+    int i = 0;
+    while (currentNode.getValue() != null) {
+      if (currentNode.getValue() == x) return i;
+      currentNode = currentNode.next();
+      i++;
+    }
     return -1;
   }
 
   public T remove(int index) {
-    checkIndex(index);
+    if (index < 0 || index >= size) {
+      throw new IndexOutOfBoundsException();
+    }
     DoublyLinkedNode<T> toRemove = getNode(index);
-    toRemove.previous().setNext(toRemove.next());
-    toRemove.next().setPrevious(toRemove.previous());
+    if (index == 0) first = toRemove.next();
+    else toRemove.previous().setNext(toRemove.next());
+    if (index == this.size-1) last = toRemove.previous();
+    else toRemove.next().setPrevious(toRemove.previous());
     size--;
     T r = toRemove.getValue();
-    toRemove = null;
     return r;
   }
 
   public void add(int index, T element) {
-    checkIndex(index);
-    DoublyLinkedNode<T> nextNode = getNode(index);
-    DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(element, nextNode, nextNode.previous());
-    nextNode.previous().setNext(newNode);
-    nextNode.setPrevious(newNode);
-    size++;
+    if (index == 0) {
+      addFirst(element);
+    } else if (index == this.size) {
+      addLast(element);
+    } else {
+      checkIndex(index);
+      DoublyLinkedNode<T> nextNode = getNode(index);
+      DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(element, nextNode, nextNode.previous());
+      nextNode.previous().setNext(newNode);
+      nextNode.setPrevious(newNode);
+      size++;
+    }
   }
 
-  public void output() {
-    System.out.println(this);
+  public void add(T element) {
+    addLast(element);
   }
 
   public String toString() {
@@ -132,10 +149,39 @@ public class DoublyLinkedList<T> implements List<T>  {
       this.nIndex = index;
     }
 
-    public void add(T el){};
-    public void set(T el){};
-    public void remove(T el){};
-    public void remove(){};
+    public void add(T el) {
+      DoublyLinkedNode<T> newNode = new DoublyLinkedNode<T>(el);
+      if (this.next == null) {
+        first = newNode;
+        last = newNode;
+      } else {
+        if (this.hasPrevious()) {
+          this.next.previous().setNext(newNode);
+        } else {
+          first = newNode;
+        }
+        newNode.setNext(this.next);
+        if (!this.hasNext()) {
+          last = newNode;
+        }
+      }
+      size++;
+    }
+
+    public void set(T el) {
+      this.next.setValue(el);
+    }
+
+    public void remove() {
+      DoublyLinkedNode<T> toRemove = this.next.previous();
+      if (toRemove.previous() == null) first = this.next;
+      else toRemove.previous().setNext(this.next);
+      if (toRemove.next() == null) last = toRemove.previous();
+      else this.next.setPrevious(toRemove.previous());
+      toRemove = null;
+      size--;
+    }
+
     public int previousIndex() {
       return this.nIndex - 1;
     }
@@ -158,13 +204,13 @@ public class DoublyLinkedList<T> implements List<T>  {
     }
 
     public T next() {
-      if (this.hasNext()) {
-        lastVisited = this.next;
-        this.nIndex++;
-        this.next = this.next.next();
-        return this.lastVisited.getValue();
+      if (!this.hasNext()) {
+        throw new NoSuchElementException();
       }
-      else throw new NoSuchElementException();
+      lastVisited = this.next;
+      this.nIndex++;
+      this.next = this.next.next();
+      return this.lastVisited.getValue();
     }
 
     public boolean hasNext() {
@@ -174,5 +220,18 @@ public class DoublyLinkedList<T> implements List<T>  {
     public boolean hasPrevious() {
       return this.nIndex > 0;
     }
+  }
+
+  public static void main(String[] args) {
+    DoublyLinkedList<String> list = new DoublyLinkedList<>();
+    list.add("Uno");
+    list.add("Dos");
+    list.add("Tres");
+    list.add("Cuatro");
+    list.add("Cinco");
+    list.add("Seis");
+    System.out.println(list);
+    list.remove(list.indexOf("Cuatro"));
+    System.out.println(list);
   }
 }

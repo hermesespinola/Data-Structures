@@ -1,7 +1,7 @@
 package list;
 
 import node.SingleLinkedNode;
-import java.util.Iterator;
+import java.util.ListIterator;
 
 public class LinkedList <T> implements List<T> {
   SingleLinkedNode<T> _firstNode;
@@ -99,35 +99,61 @@ public class LinkedList <T> implements List<T> {
     return sb.toString();
   }
 
-  public Iterator<T> iterator() {
+  public ListIterator<T> iterator() {
     return new LinkedLinearListIterator();
   }
 
-  protected class LinkedLinearListIterator implements Iterator<T> {
+  protected class LinkedLinearListIterator implements ListIterator<T> {
+    private SingleLinkedNode<T> previousNode;
 		protected SingleLinkedNode<T> nextNode;
 
     // TODO: inherit javadoc
-		/**
-		 * Returns if the iterator has another item or not.
-		 *
-		 * @return	true if has another item, false if not
-		 */
 		public boolean hasNext() {
 			return this.nextNode.next() != null;
 		}
 
-		/**
-		 * Returns the next item in the list.
-		 *
-		 * @return	next item in list
-		 */
 		public T next() {
 			if (!hasNext()) {
 				throw new NullPointerException("No more items in iterator.");
 			}
 			T item = this.nextNode.getValue();
+      this.previousNode = this.nextNode;
 			this.nextNode = this.nextNode.next();
 			return item;
 		}
+
+    public void add(T element) {
+      SingleLinkedNode<T> newNode = new SingleLinkedNode<T>(element);
+      if (previousNode != null) {
+        previousNode.setNext(newNode);
+      }
+      newNode.setNext(nextNode);
+      previousNode = newNode;
+      _size++;
+    }
+
+    public void set(T element) {
+      nextNode.setValue(element);
+    }
+
+    public void remove() {
+      previousNode.setNext(nextNode.next());
+      nextNode = null;
+      nextNode = previousNode.next();
+      _size--;
+    }
+
+    public int previousIndex() {
+      return -1;
+    }
+    public int nextIndex() {
+      return -1;
+    }
+    public T previous() {
+      return previousNode.getValue();
+    }
+    public boolean hasPrevious() {
+      return false;
+    }
   }
 }
