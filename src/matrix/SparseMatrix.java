@@ -4,7 +4,7 @@ import java.util.ListIterator;
 import list.DoublyLinkedList;
 import node.SparseNode;
 
-class SparseMatrix<T> implements Matrix<T> {
+public class SparseMatrix<T> implements Matrix<T> {
   private static class SparseMatrixNode<T> extends SparseNode<T> {
     int col;
 
@@ -46,7 +46,7 @@ class SparseMatrix<T> implements Matrix<T> {
 		for (int i = 0; i < matrix.length; i++)
 			for (int j = 0; j < matrix[i].length; j++)
 				if (matrix[i][j] != zeroElement)
-					this.add(i, j, matrix[i][j]);
+					this.set(i, j, matrix[i][j]);
 	}
 
 	private void checkIndexes(int i, int j) {
@@ -54,7 +54,7 @@ class SparseMatrix<T> implements Matrix<T> {
 			throw new IndexOutOfBoundsException();
 	}
 
-	public void add(int i, int j, T value) {
+	public void set(int i, int j, T value) {
 		if(value != this.zero) {
 			checkIndexes(i, j);
 			ListIterator<SparseMatrixNode<T>> itr = ch.iterator();

@@ -24,7 +24,7 @@ public class ArrayMatrix<V> implements Matrix<V> {
   }
 
 
-  public void add(int i, int j, V value) {
+  public void set(int i, int j, V value) {
     checkIndexes(i, j);
     arr[i * numColumns + j] = value;
   }
