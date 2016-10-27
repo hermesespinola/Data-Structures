@@ -82,7 +82,7 @@ class SparseMatrix<T> implements Matrix<T> {
 		return this.zero;
 	}
 
-  // TODO: fix error, deleting almost the whole matrix
+  // FIXME: fix error, deleting almost the whole matrix
 	public T remove(int i, int j) {
 		checkIndexes(i, j);
 		ListIterator<SparseMatrixNode<T>> itr = ch.iterator();
