@@ -2,23 +2,43 @@ package matrix;
 
 import java.util.ListIterator;
 import list.DoublyLinkedList;
-import node.Node;
+import node.SparseNode;
 
 class SparseMatrix<T> implements Matrix<T> {
+  private static class SparseMatrixNode<T> extends SparseNode<T> {
+    int col;
+
+    SparseMatrixNode(int col, int row, T val) {
+      super(row, val);
+      this.col = col;
+    }
+
+    public int row() {
+      return this.index;
+    }
+
+    int column() {
+      return this.col;
+    }
+
+    public String toString() {
+      return '[' + this.row() + ", " + this.column() + "] = " + this.getValue();
+    }
+  }
   private int numCols;
   private int numRows;
 	private T zero;
-	private DoublyLinkedList<SparseNode<T>> ch;
+	private DoublyLinkedList<SparseMatrixNode<T>> ch;
 
 	public SparseMatrix(T zeroElement, int numCols, int numRows) {
-		this.ch = new DoublyLinkedList<SparseNode<T>>();
+		this.ch = new DoublyLinkedList<SparseMatrixNode<T>>();
 		this.zero = zeroElement;
 		this.numRows = numRows;
 		this.numCols = numCols;
 	}
 
 	public SparseMatrix(T[][] matrix, T zeroElement) {
-		this.ch = new DoublyLinkedList<SparseNode<T>>();
+		this.ch = new DoublyLinkedList<SparseMatrixNode<T>>();
 		this.zero = zeroElement;
 		this.numRows = matrix.length;
 		this.numCols = matrix[0].length;
@@ -37,13 +57,13 @@ class SparseMatrix<T> implements Matrix<T> {
 	public void add(int i, int j, T value) {
 		if(value != this.zero) {
 			checkIndexes(i, j);
-			ListIterator<SparseNode<T>> itr = ch.iterator();
+			ListIterator<SparseMatrixNode<T>> itr = ch.iterator();
 			if(!itr.hasNext())
-				ch.add(0, new SparseNode<T>(i, j, value));
+				ch.add(0, new SparseMatrixNode<T>(i, j, value));
 			while (itr.hasNext()) {
-				SparseNode<T> e = itr.next();
-				if (i >= e.row && j >= e.col) {
-					ch.add(itr.nextIndex(), new SparseNode<T>(i, j, value));
+				SparseMatrixNode<T> e = itr.next();
+				if (i >= e.row() && j >= e.column()) {
+					ch.add(itr.nextIndex(), new SparseMatrixNode<T>(i, j, value));
 					break;
 				}
 			}
@@ -52,10 +72,10 @@ class SparseMatrix<T> implements Matrix<T> {
 
 	public T get(int i, int j) {
 		checkIndexes(i, j);
-		ListIterator<SparseNode<T>> itr = ch.iterator();
+		ListIterator<SparseMatrixNode<T>> itr = ch.iterator();
 		while (itr.hasNext()) {
-			SparseNode<T> e = itr.next();
-			if (i == e.row && j == e.col) {
+			SparseMatrixNode<T> e = itr.next();
+			if (i == e.row() && j == e.column()) {
 				return e.getValue();
 			}
 		}
@@ -65,10 +85,10 @@ class SparseMatrix<T> implements Matrix<T> {
   // TODO: fix error, deleting almost the whole matrix
 	public T remove(int i, int j) {
 		checkIndexes(i, j);
-		ListIterator<SparseNode<T>> itr = ch.iterator();
+		ListIterator<SparseMatrixNode<T>> itr = ch.iterator();
 		while (itr.hasNext()) {
-			SparseNode<T> e = itr.next();
-			if (i == e.row && j == e.col) {
+			SparseMatrixNode<T> e = itr.next();
+			if (i == e.row() && j == e.column()) {
 				return ch.remove(itr.previousIndex()).getValue();
 			}
 		}
@@ -110,28 +130,5 @@ class SparseMatrix<T> implements Matrix<T> {
     System.out.println(sparse);
 		System.out.println(sparse.remove(1,0));
     System.out.println(sparse);
-	}
-
-	private static class SparseNode<T> extends Node<T> {
-		protected int col;
-		protected int row;
-
-		public SparseNode(int col, int row, T val) {
-      super(val);
-			this.col = col;
-			this.row = row;
-		}
-
-    public int getColumn() {
-      return this.col;
-    }
-
-    public int getRow() {
-      return this.row;
-    }
-
-		public String toString() {
-			return '[' + this.col + ", " + this.row + "] = " + this.getValue();
-		}
 	}
 }
