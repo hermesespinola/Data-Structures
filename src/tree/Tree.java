@@ -3,6 +3,7 @@ package tree;
 import java.util.List;
 import java.util.Iterator;
 
+// TODO: remove key from all trees
 public interface Tree<K, V> extends Iterable<V> {
   public boolean isEmpty();
   public void add(K key, V val);

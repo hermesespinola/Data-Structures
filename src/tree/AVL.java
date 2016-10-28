@@ -2,6 +2,7 @@ package tree;
 
 import java.util.Stack;
 import node.BinaryTreeNode;
+import stack.LinkedStack;
 
 /*
 * Implementation of an AVL tree extending a binary search tree with key value pairs.
@@ -29,6 +30,10 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     @SuppressWarnings("unchecked")
     public AVLNode<K,V> right() {
       return (AVLNode<K,V>)super.right();
+    }
+
+    public String toString() {
+      return (new StringBuilder()).append('[').append(key).append('-').append(height).append(']').toString();
     }
   }
 
@@ -75,7 +80,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
         int rightHeight = nodeHeight(node.right().right());
         int leftHeight = nodeHeight(node.right().left());
 
-        // TODO: check this shit
         if (rightHeight >= leftHeight) {
           node = singleLeftRotation(node);
         } else {
@@ -90,7 +94,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
         int leftHeight = nodeHeight(node.left().left());
         int rightHeight = nodeHeight(node.left().right());
 
-        // TODO: check this shit
         if (leftHeight >= rightHeight) {
           node = singleRightRotation(node);
         } else {
@@ -107,7 +110,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
       if (nodeHeight(node.right()) - nodeHeight(node.left()) >= 2) {
         int rightHeight = nodeHeight(node.right().right());
         int leftHeight = nodeHeight(node.right().left());
-        // TODO: check this shit
         if (rightHeight >= leftHeight) {
           node = singleLeftRotation(node);
         } else {
@@ -230,100 +232,42 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     return (AVLNode<K,V>)root;
   }
 
+  @Override
+  public String toString() {
+    LinkedStack<AVLNode<K, V>> stack = new LinkedStack<>();
+    stack.push(root());
+    StringBuilder sb = new StringBuilder();
+    while (!stack.empty()) {
+      AVLNode<K, V> node = stack.pop();
+      if (node.right() != null)
+      stack.push(node.right());
+      if (node.left() != null)
+        stack.push(node.left());
+      sb.append(node.toString()).append(", ");
+    }
+    sb.setLength((sb.length() != 0) ? sb.length() - 2 : 0);
+    return sb.toString();
+  }
+
   public static void main(String[] args) {
     AVL<Integer, String> avl = new AVL<>();
-
-    avl.add(2, "Dos");
-    avl.add(1, "Uno");
-    avl.add(4, "Cuatro");
-    avl.add(3, "Tres");
-    avl.add(6, "Seis");
-    avl.add(5, "Cinco");
-    avl.add(-2, "-Dos");
-    avl.add(-4, "-Cuatro");
-    avl.add(-3, "-Tres");
-    avl.add(-1, "-Uno");
-    avl.add(0, "Cero");
-
+    avl.add(84, "84");
+    avl.add(10, "10");
+    avl.add(8, "8");
+    avl.add(92, "92");
+    avl.add(66, "66");
+    avl.add(88, "88");
+    avl.add(29, "29");
+    avl.add(27, "27");
+    avl.add(75, "75");
+    avl.add(72, "72");
+    avl.add(68, "68");
+    avl.add(62, "62");
+    avl.add(18, "18");
+    avl.add(80, "80");
+    avl.add(36, "36");
+    avl.add(1, "1");
+    avl.add(40, "40");
     System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(6);
-    System.out.println("Remove 6");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-2);
-    System.out.println("Remove -2");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(4);
-    System.out.println("Remove 4");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(2);
-    System.out.println("Remove 2");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(5);
-    System.out.println("Remove 5");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-1);
-    System.out.println("Remove -1");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(0);
-    System.out.println("Remove 0");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-1);
-    System.out.println("Remove -1");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-4);
-    System.out.println("Remove -4");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-4);
-    System.out.println("Remove -4");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(3);
-    System.out.println("Remove 3");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(1);
-    System.out.println("Remove 1");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
-
-    System.out.println();
-    avl.remove(-3);
-    System.out.println("Remove -3");
-    System.out.println(avl);
-    System.out.println(avl.levelOrder());
   }
 }
