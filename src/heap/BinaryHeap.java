@@ -4,8 +4,19 @@ import java.lang.RuntimeException;
 
 @SuppressWarnings("rawtypes")
 public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
+  public enum HeapType {
+    MaxHeap(1),
+    MinHeap(-1);
 
-  private HeapType heapType;
+    private final int value;
+    private HeapType(int value) {
+      this.value = value;
+    }
+    public int value() {
+      return value;
+    }
+  }
+  private HeapType type;
   private int size;
   public static final int DEF_SIZE = 100;
   private V[] heap;
@@ -17,7 +28,7 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
 
   @SuppressWarnings("unchecked")
   public BinaryHeap(int initialSize, HeapType heapType) {
-    this.heapType = heapType;
+    this.type = heapType;
     this.heap = (V[]) new Comparable[initialSize];
     this.size = initialSize;
     this.length = 0;
@@ -31,29 +42,10 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
   }
 
   protected void heapifyUp(int i) {
-    if (heapType == HeapType.MaxHeap)
-      maxHeapifyUp(i);
-    else
-      minHeapifyUp(i);
-  }
-
-  private void maxHeapifyUp(int i) {
     do {
       int parent = (i+1)/2 - 1;
-      int cmp = this.heap[i].compareTo(this.heap[parent]);
+      int cmp = this.heap[i].compareTo(this.heap[parent]) * type.value();
       if (cmp > 0)
-        shift(this.heap, i, parent);
-      else
-        break;
-      i = parent;
-    } while (i > 0);
-  }
-
-  private void minHeapifyUp(int i) {
-    do {
-      int parent = i/2;
-      int cmp = this.heap[i].compareTo(this.heap[parent]);
-      if (cmp < 0)
         shift(this.heap, i, parent);
       else
         break;
@@ -63,34 +55,13 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
 
   protected void heapifyDown(int i) {
     if (i < 0 || i >= this.length) throw new IndexOutOfBoundsException();
-    if (heapType == HeapType.MaxHeap)
-      maxHeapifyDown(i);
-    else
-      minHeapifyDown(i);
-  }
-
-  private void maxHeapifyDown(int i) {
     while (i < this.length/2) {
       int left = (i + 1)*2 - 1;
       int right = left + 1;
       int path = left;
-      if (heap[right] != null && this.heap[right].compareTo(this.heap[left]) > 0)
+      if (heap[right] != null && this.heap[right].compareTo(this.heap[left]) * type.value() > 0)
         path = right;
-      if (this.heap[path].compareTo(this.heap[i]) > 0) {
-        shift(this.heap, i, path);
-      } else break;
-      i = path;
-    }
-  }
-
-  private void minHeapifyDown(int i) {
-    while (i < this.length/2) {
-      int left = (i + 1)*2 - 1;
-      int right = left + 1;
-      int path = left;
-      if (heap[right] != null && this.heap[right].compareTo(this.heap[left]) < 0)
-        path = right;
-      if (this.heap[path].compareTo(this.heap[i]) < 0) {
+      if (this.heap[path].compareTo(this.heap[i]) * type.value() > 0) {
         shift(this.heap, i, path);
       } else break;
       i = path;
@@ -163,11 +134,6 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
       sb.append(heap[i]).append(' ');
     } sb.append(']');
     return sb.toString();
-  }
-
-  public enum HeapType {
-    MaxHeap,
-    MinHeap
   }
 
   public static void main(String[] args) {
