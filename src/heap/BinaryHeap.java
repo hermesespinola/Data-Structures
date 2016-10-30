@@ -3,7 +3,7 @@ package heap;
 import java.lang.RuntimeException;
 
 @SuppressWarnings("rawtypes")
-public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
+public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
 
   private HeapType heapType;
   private int size;
@@ -19,6 +19,7 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
   public BinaryHeap(int initialSize, HeapType heapType) {
     this.heapType = heapType;
     this.heap = (V[]) new Comparable[initialSize];
+    this.size = initialSize;
     this.length = 0;
   }
 
@@ -149,7 +150,11 @@ public class BinaryHeap<V extends Comparable<V>> implements Heap<V> {
   }
 
   public int size() {
-    return this.length - 1;
+    return this.size;
+  }
+
+  public int length() {
+    return this.length;
   }
 
   public String toString() {
