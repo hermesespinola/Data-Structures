@@ -23,23 +23,23 @@ public class TriangularMatrix<V> implements Matrix<V> {
   }
 
   public V get(int i, int j) {
-    if (i >= 0 && j >= 0 && i < size && j < size)
-      throw new IndexOutOfBoundsException();
-    return matrix[getIndex(i,j)];
+    if (i >= 0 && j >= 0 && i < size && j < size) {
+      return matrix[getIndex(i,j)];
+    } else throw new IndexOutOfBoundsException();
   }
 
   public V remove(int i, int j) {
-    if (i >= 0 && j >= 0 && i < size && j < size)
-      throw new IndexOutOfBoundsException();
-    V val = matrix[getIndex(i, j)];
-    matrix[getIndex(i, j)] = zero;
-    return val;
+    if (i >= 0 && j >= 0 && i < size && j < size) {
+      V val = matrix[getIndex(i, j)];
+      matrix[getIndex(i, j)] = zero;
+      return val;
+    } else throw new IndexOutOfBoundsException();
   }
 
   public void set(int i, int j, V value) {
-    if (i >= 0 && j >= 0 && i < size && j < size)
-      throw new IndexOutOfBoundsException();
-    matrix[getIndex(i,j)] = value;
+    if (i >= 0 && j >= 0 && i < size && j < size) {
+      matrix[getIndex(i,j)] = value;
+    } else throw new IndexOutOfBoundsException();
   }
 
   public int numColumns() {
@@ -48,5 +48,27 @@ public class TriangularMatrix<V> implements Matrix<V> {
 
   public int numRows() {
     return this.size;
+  }
+
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        sb.append(get(i, j)).append(' ');
+      }
+      sb.append('\n');
+    }
+    return sb.toString();
+  }
+
+  public static void main(String[] args) {
+    int size = 10;
+    TriangularMatrix<Integer> matrix = new TriangularMatrix<Integer>(size, 0);
+    for (int i = 0; i < size; i++) {
+      for (int j = 0; j < size; j++) {
+        matrix.set(i, j, i + j);
+      }
+    }
+    System.out.println(matrix);
   }
 }

@@ -109,6 +109,10 @@ public class SparseList<V> implements List<V> {
     }
   }
 
+  public void add(V element) {
+    add(size+1, element);
+  }
+
   public Iterator<V> iterator() {
     return new SparseListIterator();
   }
