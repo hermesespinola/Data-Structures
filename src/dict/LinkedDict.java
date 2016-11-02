@@ -86,13 +86,20 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   */
   public Val remove(Key k) {
     checkKey(k);
-    for (DictNode<Key,Val> x = table[hash(k)]; x != null; x = x.next) {
-        if (x.key.equals(k)) {
-          Val v = x.value;
-          x = x.next;
-          n--;
-          return v;
-        };
+    DictNode<Key,Val> x = table[hash(k)];
+    if (x.key.equals(k)) {
+      Val v = x.value;
+      table[hash(k)] = x.next;
+      n--;
+      return v;
+    }
+    while (x.next != null) {
+      if (x.next.key.equals(k)) {
+        Val v = x.next.value;
+        x.next = x.next.next;
+        n--;
+        return v;
+      }
     }
     return null;
   }
