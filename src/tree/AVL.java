@@ -1,14 +1,13 @@
 package tree;
 
 import java.util.Stack;
-import node.BinaryTreeNode;
-import stack.LinkedStack;
 
 /*
 * Implementation of an AVL tree extending a binary search tree with key value pairs.
 */
-@SuppressWarnings("rawtypes")
 public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
+  private static final long serialVersionUID = 11L;
+  protected int size;
   private static class AVLNode<K extends Comparable<? super K>, V> extends BSTNode<K, V> {
     protected int height;
 
@@ -31,10 +30,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     public AVLNode<K,V> right() {
       return (AVLNode<K,V>)super.right();
     }
-
-    public String toString() {
-      return (new StringBuilder()).append('[').append(key).append('-').append(height).append(']').toString();
-    }
   }
 
   public AVL() {
@@ -47,12 +42,13 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
 
   /*
   * Recursively add a new node to the AVL tree.
-  * @param key The key of the new node.
+  * @param key The key of the new Node.
   * @param val The value of the new node
   */
   @Override
   public void add(K key, V val) {
-    this.root = add(key, val, root());
+    this.root = add(key, val, (AVLNode<K,V>)root);
+    this.size++;
   }
 
   /*
@@ -102,7 +98,7 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
       }
 
     } else if (node.left() != null) { // key == node.key (remove this node)
-      AVLNode<K,V> greaterLeft = greater(node.left());
+      BSTNode<K,V> greaterLeft = node.left().greater();
       node.setValue(greaterLeft.getValue());
       node.setKey(greaterLeft.getKey());
 
@@ -127,21 +123,11 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     return node;
   }
 
-  @SuppressWarnings("unchecked")
-  public static AVLNode greater(BinaryTreeNode root) {
-    return (root.right() == null) ? (AVLNode)root : lesser(root.right());
-  }
-
-  @SuppressWarnings("unchecked")
-  public static AVLNode lesser(BinaryTreeNode root) {
-    return (root.left() == null) ? (AVLNode)root : lesser(root.left());
-  }
-
   /*
   * The actual add method.
   * @param key The key of the new Node.
-  * @param val The value of the new node.
   * @param node root of the where the node is to be added.
+  * @param val The value of the new node.
   * @return the new root of the tree.
   */
   protected AVLNode<K,V> add(K key, V val, AVLNode<K,V> node) {
@@ -232,23 +218,6 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     return (AVLNode<K,V>)root;
   }
 
-  @Override
-  public String toString() {
-    LinkedStack<AVLNode<K, V>> stack = new LinkedStack<>();
-    stack.push(root());
-    StringBuilder sb = new StringBuilder();
-    while (!stack.empty()) {
-      AVLNode<K, V> node = stack.pop();
-      if (node.right() != null)
-      stack.push(node.right());
-      if (node.left() != null)
-        stack.push(node.left());
-      sb.append(node.toString()).append(", ");
-    }
-    sb.setLength((sb.length() != 0) ? sb.length() - 2 : 0);
-    return sb.toString();
-  }
-
   public static void main(String[] args) {
     AVL<Integer, String> avl = new AVL<>();
     avl.add(84, "84");
@@ -268,6 +237,11 @@ public class AVL<K extends Comparable<? super K>, V> extends BST<K, V> {
     avl.add(36, "36");
     avl.add(1, "1");
     avl.add(40, "40");
+
+    avl.remove(92);
+    avl.remove(8);
+    avl.remove(36);
+    avl.remove(1);
     System.out.println(avl);
   }
 }

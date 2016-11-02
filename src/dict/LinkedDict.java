@@ -108,7 +108,6 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
    * erases the contents of the table
   */
   public void clear() {
-    // borra todo al chile
     for (DictNode<Key, Val> root : table) {
       root = null;
     }
