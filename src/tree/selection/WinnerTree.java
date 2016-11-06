@@ -19,14 +19,15 @@ public class WinnerTree<P extends Comparable<? super P>> implements SelectionTre
               s;      // left-most internal node at the lowest level.
 
   @SuppressWarnings("unchecked")
-  public WinnerTree(Playable<P>[] players, GameType type) {
+  public WinnerTree(P[] players, GameType type) {
     s = (int) Math.pow(2, Math.floor(Math.log(players.length-1) / Math.log(2)));
     lowext = 2 * (players.length - s);
     offset = 2*s - 1;
     matchTree = new Playable[players.length-1];
 
-    this.players = players;
+    this.players = new PlayableNode[players.length];
     for (int i = 0; i < players.length; i++) {
+      this.players[i] = new PlayableNode<P>(players[i]);
       this.players[i].index = i;
       this.players[i].parent = getParent(lowext, offset, players.length, i + 1);
     }
@@ -101,27 +102,5 @@ public class WinnerTree<P extends Comparable<? super P>> implements SelectionTre
 
   public void change(int i, P x) {
     players[i].value = x;
-  }
-
-  @SuppressWarnings("unchecked")
-  public static void main(String[] args) {
-    PlayableNode<Integer>[] pl = (PlayableNode<Integer>[]) new PlayableNode[7];
-    for (int i = 0; i < pl.length; i++) {
-      pl[i] = new PlayableNode<Integer>(i+1);
-    }
-    WinnerTree<Integer> wt = new WinnerTree<Integer>(pl, GameType.Max);
-
-    System.out.println(wt.offset);
-
-    Playable<Integer> winner = wt.getWinner();
-    System.out.println(wt);
-    System.out.println();
-    while (winner.value != 0) {
-      wt.change(winner.index, winner.value - 1);
-      wt.replay(winner.index);
-      System.out.println(wt);
-      System.out.println();
-      winner = wt.getWinner();
-    }
   }
 }

@@ -28,6 +28,6 @@ public class DoublyLinkedNode<V> extends SingleLinkedNode<V> {
   }
 
   public void setPrevious(DoublyLinkedNode<V> prev) {
-    this.previous = previous;
+    this.previous = prev;
   }
 }

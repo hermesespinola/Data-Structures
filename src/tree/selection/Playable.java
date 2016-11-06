@@ -27,7 +27,10 @@ public abstract class Playable<V extends Comparable<? super V>> implements Compa
   }
 
   public Playable<V> play(Playable<V> other, GameType type) {
-    if (other == null) {
+    if (this.value() == null) {
+      return other;
+    }
+    if (other == null || other.value() == null) {
       return this;
     } else {
       return (this.compareTo(other) * type.value() > 0) ? this : other;
