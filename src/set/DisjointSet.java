@@ -15,7 +15,6 @@ public class DisjointSet {
   /**
   * initialize n sets
   * @param n number of sets to initialize
-  * @return lo que regresa
   */
   public void makeSet(int n) {
     p = new int[n];
@@ -23,7 +22,6 @@ public class DisjointSet {
       p[i] = i;
     }
     rank = new int[n];
-
     size = new int[n];
     for (int i = 0; i < n; i++) {
       size[i] = 1;
@@ -33,6 +31,8 @@ public class DisjointSet {
 
   /**
   * find the parent of the set x belongs to
+  * @param x a node in a set
+  * @return the parent of the set x belongs to
   */
   public int find(int x) {
     if (x < 0 || x >= numSets) {
@@ -44,10 +44,21 @@ public class DisjointSet {
     return i;
   }
 
+  /**
+  * find if nodes i and j belong to the same set
+  * @param i a node
+  * @param j another node
+  * @return if i and j belong to the same set
+  */
   public boolean isSameSet(int i, int j) {
     return find(i) == find(j);
   }
 
+  /**
+  * perform a union operation on the sets i and j belong to
+  * @param i a node
+  * @param j another node
+  */
   public void union(int i, int j) {
     int iParent = find(i);
     int jParent = find(j);
@@ -73,6 +84,11 @@ public class DisjointSet {
     return numSets;
   }
 
+  /**
+  * find the size of the set i belongs to
+  * @param i a node
+  * @return the size of the set i belongs to
+  */
   public int sizeOfSet(int i) {
     return size[find(i)];
   }
