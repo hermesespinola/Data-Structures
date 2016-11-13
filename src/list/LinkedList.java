@@ -118,7 +118,7 @@ public class LinkedList <T> implements List<T> {
 
     // TODO: inherit javadoc
 		public boolean hasNext() {
-			return this.nextNode != null && this.nextNode.next() != null;
+			return this.nextNode != null;
 		}
 
 		public T next() {
