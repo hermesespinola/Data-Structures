@@ -51,7 +51,6 @@ public class ArrayQueue<T> implements Queue<T> {
    }
 
    private void resize() {
-     System.out.println("resizing...");
      CircularArray<T> newArr = new CircularArray<T>(this.size*2);
      for (int i = nextDequeueIndex, j = newArr.length(); i > nextEnqueueIndex; i--, j--) {
       newArr.set(j, this.arr.get(i));
