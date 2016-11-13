@@ -26,7 +26,6 @@ public interface Graph <V extends Vertex<V>> {
 
     while (!q.empty()) {
       Vertex<V> current = q.dequeue();
-      System.out.println(current);
       for (Vertex<V> neighbour : current.adjacentVertices()) {
         if (neighbour.distance() == null) {
           neighbour.setDistance(current.distance() + 1);
@@ -50,7 +49,6 @@ public interface Graph <V extends Vertex<V>> {
 
     while (!s.empty()) {
       Vertex<V> current = s.pop();
-      System.out.println(current);
       for (Vertex<V> neighbour : current.adjacentVertices()) {
         if (neighbour.distance() == null) {
           neighbour.setDistance(current.distance() + 1);
