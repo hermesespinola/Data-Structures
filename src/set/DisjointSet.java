@@ -1,9 +1,11 @@
 package set;
 
 import java.util.Arrays;
+import node.Node;
 
-public class DisjointSet {
-  int[] p; // array of parents
+@SuppressWarnings("rawtypes")
+public class DisjointSet<V extends Node<Integer>> {
+  V[] p; // array of parents
   int[] rank; // rank of each set
   int[] size; // size of each set
   int numSets; // number of sets
@@ -16,10 +18,11 @@ public class DisjointSet {
   * initialize n sets
   * @param n number of sets to initialize
   */
+  @SuppressWarnings("unchecked")
   public void makeSet(int n) {
-    p = new int[n];
+    p = (V[]) new Node[n];
     for (int i = 0; i < n; i++) {
-      p[i] = i;
+      p[i] = (V) new Node<Integer>(i);
     }
     rank = new int[n];
     size = new int[n];
@@ -34,14 +37,14 @@ public class DisjointSet {
   * @param x a node in a set
   * @return the parent of the set x belongs to
   */
-  public int find(int x) {
+  public V find(int x) {
     if (x < 0 || x >= numSets) {
       throw new IndexOutOfBoundsException();
     }
     int i = x;
-    while (i != p[i]) i = p[i];
-    p[x] = i;
-    return i;
+    while (i != p[i].getValue()) i = p[i].getValue();
+    p[x].setValue(i);
+    return p[x];
   }
 
   /**
@@ -60,27 +63,27 @@ public class DisjointSet {
   * @param j another node
   */
   public void union(int i, int j) {
-    int iParent = find(i);
-    int jParent = find(j);
-    if (iParent != jParent) {
-      if (rank[iParent] <= rank[jParent]) {
-        p[jParent] = iParent;
-        size[iParent] += size[jParent];
-        if (rank[iParent] == rank[jParent]) {
-          rank[iParent] += 1;
+    V iParent = find(i);
+    V jParent = find(j);
+    if (iParent.getValue() != jParent.getValue()) {
+      if (rank[iParent.getValue()] <= rank[jParent.getValue()]) {
+        jParent.setValue(iParent.getValue());
+        size[iParent.getValue()] += size[jParent.getValue()];
+        if (rank[iParent.getValue()] == rank[jParent.getValue()]) {
+          rank[iParent.getValue()] += 1;
         }
       } else {
-        p[iParent] = jParent;
-        size[jParent] += size[iParent];
-        if (rank[iParent] == rank[jParent]) {
-          rank[jParent] += 1;
+        iParent.setValue(jParent.getValue());
+        size[jParent.getValue()] += size[iParent.getValue()];
+        if (rank[iParent.getValue()] == rank[jParent.getValue()]) {
+          rank[jParent.getValue()] += 1;
         }
       }
       numSets--;
     }
   }
 
-  public int numDisjointSets() {
+  public int numSets() {
     return numSets;
   }
 
@@ -90,7 +93,7 @@ public class DisjointSet {
   * @return the size of the set i belongs to
   */
   public int sizeOfSet(int i) {
-    return size[find(i)];
+    return size[find(i).getValue()];
   }
 
   public String toString() {
@@ -98,11 +101,11 @@ public class DisjointSet {
   }
 
   public static void main(String[] args) {
-    DisjointSet ds = new DisjointSet(10);
+    DisjointSet<Node<Integer>> ds = new DisjointSet<>(10);
     ds.union(2, 6);
     ds.union(1, 2);
     System.out.println(ds);
-    System.out.println(ds.numDisjointSets());
+    System.out.println(ds.numSets());
     System.out.println(ds.sizeOfSet(6));
   }
 }
