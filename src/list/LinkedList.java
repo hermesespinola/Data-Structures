@@ -41,7 +41,7 @@ public class LinkedList <T> implements List<T> {
     SingleLinkedNode<T> currentNode = this._firstNode;
     int i = 0;
     while (currentNode.getValue() != null) {
-      if (currentNode.getValue() == x) return i;
+      if (currentNode.getValue().equals(x)) return i;
       currentNode = currentNode.next();
       i++;
     }
@@ -92,10 +92,14 @@ public class LinkedList <T> implements List<T> {
   public String toString() {
     StringBuilder sb = new StringBuilder("[ ");
     SingleLinkedNode<T> currentNode = this._firstNode;
-    while (currentNode.next() != null) {
-      sb.append(currentNode.getValue()).append(' ');
-      currentNode = currentNode.next();
-    } sb.append(currentNode.getValue()).append(']');
+    if (currentNode != null) {
+      while (currentNode.next() != null) {
+        sb.append(currentNode.getValue()).append(' ');
+        currentNode = currentNode.next();
+      }
+      sb.append(currentNode.getValue());
+    }
+    sb.append(']');
     return sb.toString();
   }
 
@@ -107,9 +111,14 @@ public class LinkedList <T> implements List<T> {
     private SingleLinkedNode<T> previousNode;
 		protected SingleLinkedNode<T> nextNode;
 
+    {
+      this.nextNode = getNode(0);
+      previousNode = null;
+    }
+
     // TODO: inherit javadoc
 		public boolean hasNext() {
-			return this.nextNode.next() != null;
+			return this.nextNode != null && this.nextNode.next() != null;
 		}
 
 		public T next() {
