@@ -1,3 +1,7 @@
+package graph.undirected;
+
+import graph.Graph;
+
 public class AdjacencyList implements Graph<ALVertex> {
   ALVertex[] matrix;
   private int vertexCount;

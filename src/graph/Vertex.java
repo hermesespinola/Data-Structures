@@ -1,3 +1,5 @@
+package graph;
+
 import list.List;
 
 public interface Vertex<V extends Vertex<V>> {

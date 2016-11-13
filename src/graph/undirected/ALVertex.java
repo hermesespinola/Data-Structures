@@ -1,4 +1,7 @@
+package graph.undirected;
+
 import list.LinkedList;
+import graph.Vertex;
 
 class ALVertex implements Vertex<ALVertex> {
   int value;
@@ -67,6 +70,6 @@ class ALVertex implements Vertex<ALVertex> {
 
   @Override
   public int hashCode() {
-    return ((Integer)value).hashCode();
+    return ((Integer)this.value).hashCode();
   }
 }
