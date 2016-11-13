@@ -38,7 +38,7 @@ public class DisjointSet<V extends Node<Integer>> {
   * @return the parent of the set x belongs to
   */
   public V find(int x) {
-    if (x < 0 || x >= numSets) {
+    if (x < 0 || x >= p.length) {
       throw new IndexOutOfBoundsException();
     }
     int i = x;
@@ -104,7 +104,15 @@ public class DisjointSet<V extends Node<Integer>> {
     DisjointSet<Node<Integer>> ds = new DisjointSet<>(10);
     ds.union(2, 6);
     ds.union(1, 2);
+    ds.union(5, 7);
     System.out.println(ds);
+    System.out.println(ds.find(2));
+    System.out.println(ds.find(6));
+    System.out.println(ds.find(1));
+    System.out.println();
+    System.out.println(ds.find(5));
+    System.out.println(ds.find(7));
+    System.out.println();
     System.out.println(ds.numSets());
     System.out.println(ds.sizeOfSet(6));
   }

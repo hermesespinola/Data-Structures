@@ -14,4 +14,8 @@ public class Node<T> {
   public T getValue() {
     return this.value;
   }
+
+  public String toString() {
+    return this.value.toString();
+  }
 }
