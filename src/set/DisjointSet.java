@@ -1,3 +1,5 @@
+package set;
+
 import java.util.Arrays;
 
 public class DisjointSet {
