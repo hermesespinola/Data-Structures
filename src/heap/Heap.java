@@ -1,7 +1,5 @@
 package heap;
 
-import java.util.Iterator;
-
 public interface Heap <V extends Comparable<? super V>> {
   public void clear();
   public void insert(V value);
