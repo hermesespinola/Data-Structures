@@ -4,26 +4,26 @@ import java.util.Arrays;
 
 @SuppressWarnings("rawtypes")
 public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
-  private HeapType type;
+  private Type type;
   private int size;
   public static final int DEF_SIZE = 100;
   private V[] heap;
   private int length;
 
-  public BinaryHeap(HeapType heapType) {
-    this(DEF_SIZE, heapType);
+  public BinaryHeap(Type Type) {
+    this(DEF_SIZE, Type);
   }
 
   @SuppressWarnings("unchecked")
-  public BinaryHeap(int initialSize, HeapType heapType) {
-    this.type = heapType;
+  public BinaryHeap(int initialSize, Type Type) {
+    this.type = Type;
     this.heap = (V[]) new Comparable[initialSize];
     this.size = initialSize;
     this.length = 0;
   }
 
-  public BinaryHeap(V[] values, HeapType heapType) {
-    this(DEF_SIZE + values.length, heapType);
+  public BinaryHeap(V[] values, Type Type) {
+    this(DEF_SIZE + values.length, Type);
     for (V v : values) {
       this.insert(v);
     }
@@ -125,13 +125,13 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
   }
 
   public static void main(String[] args) {
-    BinaryHeap<Integer> heap = new BinaryHeap<Integer>(new Integer[] {3, 4, 7, 3, 5, 6, 8, 9, 2, 1, 7, 10}, HeapType.MinHeap);
+    BinaryHeap<Integer> heap = new BinaryHeap<Integer>(new Integer[] {3, 4, 7, 3, 5, 6, 8, 9, 2, 1, 7, 10}, Type.Min);
     System.out.println(heap);
     while (!heap.isEmpty()) {
       System.out.println(heap.pop());
     }
     String[] sorted = new String[] {"Hermes", "Jamon", "Colchon", "Tom", "A", "B", "Baldor", "Batman", "Jesus"};
-    Heap.heapSort(sorted, sorted, HeapType.MinHeap);
+    Heap.heapSort(sorted, sorted, Type.Min);
     System.out.println(Arrays.toString(sorted));
   }
 }

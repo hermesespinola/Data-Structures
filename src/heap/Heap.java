@@ -10,12 +10,12 @@ public interface Heap <V extends Comparable<? super V>> {
   public int size();
   public String toString();
 
-  public static enum HeapType {
-    MaxHeap(1),
-    MinHeap(-1);
+  public static enum Type {
+    Max(1),
+    Min(-1);
 
     private final int value;
-    private HeapType(int value) {
+    private Type(int value) {
       this.value = value;
     }
     public int value() {
@@ -23,7 +23,7 @@ public interface Heap <V extends Comparable<? super V>> {
     }
   }
 
-  public static <V extends Comparable<? super V>> void heapSort(V[] in, V[] out, HeapType type) {
+  public static <V extends Comparable<? super V>> void heapSort(V[] in, V[] out, Type type) {
     Heap<V> heap = new BinaryHeap<>(in.length, type);
     for (V el : in) {
       heap.insert(el);
