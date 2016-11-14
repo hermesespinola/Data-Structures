@@ -1,21 +1,9 @@
 package heap;
 
-import java.lang.RuntimeException;
+import java.util.Arrays;
 
 @SuppressWarnings("rawtypes")
 public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
-  public enum HeapType {
-    MaxHeap(1),
-    MinHeap(-1);
-
-    private final int value;
-    private HeapType(int value) {
-      this.value = value;
-    }
-    public int value() {
-      return value;
-    }
-  }
   private HeapType type;
   private int size;
   public static final int DEF_SIZE = 100;
@@ -142,5 +130,8 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
     while (!heap.isEmpty()) {
       System.out.println(heap.pop());
     }
+    String[] sorted = new String[] {"Hermes", "Jamon", "Colchon", "Tom", "A", "B", "Baldor", "Batman", "Jesus"};
+    Heap.heapSort(sorted, sorted, HeapType.MinHeap);
+    System.out.println(Arrays.toString(sorted));
   }
 }
