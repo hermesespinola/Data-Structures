@@ -1,6 +1,5 @@
 package tree.selection;
 
-import tree.selection.Playable.GameType;
 import java.lang.reflect.Array;
 
 public interface SelectionTree<P extends Comparable<? super P>> {
@@ -9,20 +8,29 @@ public interface SelectionTree<P extends Comparable<? super P>> {
   public Playable<P>[] players();
   public void change(int i, P x);
 
-  @SuppressWarnings("unchecked")
-  public static <T extends Comparable<? super T>> T[] tournamentSort(T[] in, Class<T> c, GameType type) {
+  public static enum Type {
+    Max(1), Min(-1);
+
+    private final int value;
+    private Type(int value) {
+      this.value = value;
+    }
+    public int value() {
+      return value;
+    }
+  }
+
+  public static <T extends Comparable<? super T>> void tournamentSort(T[] in, T[] out, Type type) {
     WinnerTree<T> wt = new WinnerTree<T>(in, type);
-    T[] ret = (T[]) Array.newInstance(c, in.length);
 
     Playable<T> winner = wt.getWinner();
     int i = 0;
     while (winner.value != null) {
-      ret[i] = winner.value();
+      out[i] = winner.value();
       wt.change(winner.index, null);
       wt.replay(winner.index);
       winner = wt.getWinner();
       i++;
     }
-    return ret;
   }
 }

@@ -1,7 +1,5 @@
 package tree.selection;
 
-import tree.selection.Playable.GameType;
-
 @SuppressWarnings("rawtypes")
 public class WinnerTree<P extends Comparable<? super P>> implements SelectionTree<P> {
 
@@ -11,7 +9,7 @@ public class WinnerTree<P extends Comparable<? super P>> implements SelectionTre
     }
   }
 
-  GameType type;
+  Type type;
   Playable<P>[] matchTree;
   Playable<P>[] players;
   private int offset, // right-most internal node at the lowest level.
@@ -19,7 +17,7 @@ public class WinnerTree<P extends Comparable<? super P>> implements SelectionTre
               s;      // left-most internal node at the lowest level.
 
   @SuppressWarnings("unchecked")
-  public WinnerTree(P[] players, GameType type) {
+  public WinnerTree(P[] players, Type type) {
     s = (int) Math.pow(2, Math.floor(Math.log(players.length-1) / Math.log(2)));
     lowext = 2 * (players.length - s);
     offset = 2*s - 1;
@@ -64,7 +62,8 @@ public class WinnerTree<P extends Comparable<? super P>> implements SelectionTre
     while (match > 0) {
       matchParent = (match + 1) / 2;
       Playable<P> leftPlayer = matchTree[matchParent * 2 - 1];
-      Playable<P> rightPlayer = (matchParent * 2 >= matchTree.length) ? players[2*matchParent+lowext-players.length+1] : matchTree[matchParent * 2];
+      Playable<P> rightPlayer = (matchParent * 2 >= matchTree.length) ?
+        players[2*matchParent+lowext-players.length+1] : matchTree[matchParent * 2];
       matchTree[matchParent-1] = leftPlayer.play(rightPlayer, type);
       match = matchParent-1;
     }
