@@ -17,19 +17,22 @@ public class OpenAddressingDict<K, V> implements Dict<K, V> {
       private int threshold;
 
       @SuppressWarnings("unchecked")
-      public OpenAddressingDict(int initialSize, float loadFactor) {
-        this.m = initialSize;
+      public OpenAddressingDict(int initialCapacity, float loadFactor) {
+        if (loadFactor <= 0 || loadFactor > 1) {
+          throw new IllegalArgumentException("loadFactor must be in rage (0, 1]");
+        }
+        this.m = initialCapacity + (int) (initialCapacity * (1 - loadFactor));
         this.n = 0;
         this.loadFactor = loadFactor;
-        this.threshold = (int) (initialSize * loadFactor);
+        this.threshold = (int) (this.m * loadFactor);
         table = (Entry<K, V>[])new Entry[m];
         a = new BigInteger(Integer.toString(ThreadLocalRandom.current().nextInt(1, 1001))).nextProbablePrime().longValue();
         b = new BigInteger(Integer.toString(ThreadLocalRandom.current().nextInt(0, 1001))).nextProbablePrime().longValue();
         p = new BigInteger(Integer.toString(m)).nextProbablePrime().longValue();
       }
 
-      public OpenAddressingDict(int initialSize) {
-        this(initialSize, DEF_LOAD);
+      public OpenAddressingDict(int initialCapacity) {
+        this(initialCapacity, DEF_LOAD);
       }
 
       public OpenAddressingDict() {
