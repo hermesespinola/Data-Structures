@@ -1,35 +1,31 @@
 package set;
 
 import java.util.Arrays;
-import node.Node;
+import node.KeyValueNode;
+import dict.OpenAddressingDict;
 
 @SuppressWarnings("rawtypes")
-public class DisjointSet<V extends Node<Integer>> {
-  V[] p; // array of parents
-  int[] rank; // rank of each set
-  int[] size; // size of each set
+public class DisjointSet<V> {
+  OpenAddressingDict<V, V> p; // array of parents
+  OpenAddressingDict<V, Integer> rank; // rank of each set
+  OpenAddressingDict<V, Integer> size; // size of each set
   int numSets; // number of sets
-
-  public DisjointSet(int nSets) {
-    this.makeSet(nSets);
-  }
 
   /**
   * initialize n sets
   * @param n number of sets to initialize
   */
   @SuppressWarnings("unchecked")
-  public void makeSet(int n) {
-    p = (V[]) new Node[n];
-    for (int i = 0; i < n; i++) {
-      p[i] = (V) new Node<Integer>(i);
+  public DisjointSet(V[] elements) {
+    p = new OpenAddressingDict<>(elements.length);
+    rank = new OpenAddressingDict<>(elements.length);
+    size = new OpenAddressingDict<>(elements.length);
+    for (V element : elements) {
+      p.add(element, element);
+      rank.add(element, 0);
+      size.add(element, 1);
     }
-    rank = new int[n];
-    size = new int[n];
-    for (int i = 0; i < n; i++) {
-      size[i] = 1;
-    }
-    numSets = n;
+    numSets = elements.length;
   }
 
   /**
@@ -37,14 +33,14 @@ public class DisjointSet<V extends Node<Integer>> {
   * @param x a node in a set
   * @return the parent of the set x belongs to
   */
-  public V find(int x) {
-    if (x < 0 || x >= p.length) {
-      throw new IndexOutOfBoundsException();
+  public V find(V x) {
+    if (!p.contains(x)) {
+      throw new IllegalArgumentException("value " + x + " is not in the disjoint set");
     }
-    int i = x;
-    while (i != p[i].getValue()) i = p[i].getValue();
-    p[x].setValue(i);
-    return p[x];
+    V i = x;
+    while (!i.equals(p.getValue(i))) i = p.getValue(i);
+    p.add(x, i);
+    return p.getValue(x);
   }
 
   /**
@@ -53,7 +49,7 @@ public class DisjointSet<V extends Node<Integer>> {
   * @param j another node
   * @return if i and j belong to the same set
   */
-  public boolean isSameSet(int i, int j) {
+  public boolean isSameSet(V i, V j) {
     return find(i) == find(j);
   }
 
@@ -62,21 +58,21 @@ public class DisjointSet<V extends Node<Integer>> {
   * @param i a node
   * @param j another node
   */
-  public void union(int i, int j) {
+  public void union(V i, V j) {
     V iParent = find(i);
     V jParent = find(j);
-    if (iParent.getValue() != jParent.getValue()) {
-      if (rank[iParent.getValue()] <= rank[jParent.getValue()]) {
-        jParent.setValue(iParent.getValue());
-        size[iParent.getValue()] += size[jParent.getValue()];
-        if (rank[iParent.getValue()] == rank[jParent.getValue()]) {
-          rank[iParent.getValue()] += 1;
+    if (iParent != jParent) {
+      if (rank.getValue(iParent) <= rank.getValue(jParent)) {
+        p.add(jParent, iParent);
+        size.add(iParent, size.getValue(iParent) + size.getValue(jParent));
+        if (rank.getValue(iParent) == rank.getValue(jParent)) {
+          rank.add(iParent, rank.getValue(iParent) + 1);
         }
       } else {
-        iParent.setValue(jParent.getValue());
-        size[jParent.getValue()] += size[iParent.getValue()];
-        if (rank[iParent.getValue()] == rank[jParent.getValue()]) {
-          rank[jParent.getValue()] += 1;
+        p.add(iParent, jParent);
+        size.add(jParent, size.getValue(jParent) + size.getValue(iParent));
+        if (rank.getValue(iParent) == rank.getValue(jParent)) {
+          rank.add(jParent, rank.getValue(jParent) + 1);
         }
       }
       numSets--;
@@ -92,28 +88,28 @@ public class DisjointSet<V extends Node<Integer>> {
   * @param i a node
   * @return the size of the set i belongs to
   */
-  public int sizeOfSet(int i) {
-    return size[find(i).getValue()];
+  public int sizeOfSet(V i) {
+    return size.getValue(find(i));
   }
 
   public String toString() {
-    return Arrays.toString(p);
+    return p.toString();
   }
 
   public static void main(String[] args) {
-    DisjointSet<Node<Integer>> ds = new DisjointSet<>(10);
-    ds.union(2, 6);
-    ds.union(1, 2);
-    ds.union(5, 7);
-    System.out.println(ds);
-    System.out.println(ds.find(2));
-    System.out.println(ds.find(6));
-    System.out.println(ds.find(1));
+    DisjointSet<String> ds = new DisjointSet<>(new String[] {"Lucio", "Chuck", "Chacalaca", "Tequila", "Olote", "Palabra", "Wassaaa", "chucha", "Lulu", "Batman"});
+    ds.union("Chuck", "Batman");
+    ds.union("Batman", "Lucio");
+    ds.union("Chacalaca", "Tequila");
+    System.out.println(ds.find("Lucio"));
+    System.out.println(ds.find("Batman"));
+    System.out.println(ds.find("Chuck"));
     System.out.println();
-    System.out.println(ds.find(5));
-    System.out.println(ds.find(7));
+    System.out.println(ds.find("Tequila"));
+    System.out.println(ds.find("Wassaaa"));
     System.out.println();
     System.out.println(ds.numSets());
-    System.out.println(ds.sizeOfSet(6));
+    System.out.println(ds.sizeOfSet("Palabra"));
+    System.out.println(ds);
   }
 }
