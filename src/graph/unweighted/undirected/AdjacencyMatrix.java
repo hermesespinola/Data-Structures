@@ -22,7 +22,7 @@ public class AdjacencyMatrix implements UnweightedGraph<AMVertex> {
   }
 
   public void addEdge(int i, int j) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
+    if (i >= 0 && i < vertexCount && j >= 0 && j < vertexCount) {
       matrix.set(i, j, true);
     }
   }

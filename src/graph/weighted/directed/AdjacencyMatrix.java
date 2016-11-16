@@ -13,7 +13,7 @@ public class AdjacencyMatrix implements WeightedGraph<AMVertex> {
 
   public AdjacencyMatrix(int vertexCount) {
     this.vertexCount = vertexCount;
-    this.matrix = new ArrayMatrix<Float>(vertexCount, vertexCount);
+    this.matrix = new ArrayMatrix<Float>(vertexCount, vertexCount, 0f);
     this.vertices = new AMVertex[vertexCount];
     for (int i = 0; i < vertexCount; i++) {
       vertices[i] = new AMVertex(i, this);
@@ -21,7 +21,7 @@ public class AdjacencyMatrix implements WeightedGraph<AMVertex> {
   }
 
   public void addEdge(int i, int j, float weight) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
+    if (i >= 0 && i < vertexCount && j >= 0 && j < vertexCount) {
       matrix.set(i, j, weight);
     } else {
       throw new IndexOutOfBoundsException();

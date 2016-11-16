@@ -20,7 +20,7 @@ public class AdjacencyList implements WeightedGraph<ALVertex> {
   }
 
   public void addEdge(int i, int j, float weight) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
+    if (i >= 0 && i < vertexCount && j >= 0 && j < vertexCount) {
       if (i == j) return;
       ALVertex v1 = matrix[i];
       ALVertex v2 = matrix[2];
@@ -111,7 +111,7 @@ class ALVertex extends Vertex<ALVertex> {
   public String toString() {
     StringBuilder sb = new StringBuilder().append(this.value).append(": [");
     for (Edge<ALVertex> e : outgoingEdges) {
-      sb.append(e.vertex()).append(": ").append(e.weight()).append(", ");
+      sb.append(e.vertex().getValue()).append(": ").append(e.weight()).append(", ");
     }
     if (sb.length() > 2) sb.setLength(sb.length() - 2);
     return sb.append(']').toString();

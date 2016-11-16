@@ -1,4 +1,4 @@
-package graph.undirected;
+package graph.unweighted.undirected;
 
 import graph.unweighted.UnweightedGraph;
 import list.LinkedList;
@@ -18,7 +18,7 @@ public class AdjacencyList implements UnweightedGraph<ALVertex> {
   }
 
   public void addEdge(int i, int j) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
+    if (i >= 0 && i < vertexCount && j >= 0 && j < vertexCount) {
       if (i == j) return;
       ALVertex v1 = matrix[i];
       ALVertex v2 = matrix[2];

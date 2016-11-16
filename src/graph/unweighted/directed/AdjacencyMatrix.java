@@ -14,7 +14,7 @@ public class AdjacencyMatrix implements UnweightedGraph<AMVertex> {
 
   public AdjacencyMatrix(int vertexCount) {
     this.vertexCount = vertexCount;
-    this.matrix = new ArrayMatrix<Boolean>(vertexCount, vertexCount);
+    this.matrix = new ArrayMatrix<Boolean>(vertexCount, vertexCount, false);
     this.vertices = new AMVertex[vertexCount];
     for (int i = 0; i < vertexCount; i++) {
       vertices[i] = new AMVertex(i, this);
@@ -22,7 +22,7 @@ public class AdjacencyMatrix implements UnweightedGraph<AMVertex> {
   }
 
   public void addEdge(int i, int j) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
+    if (i >= 0 && i < vertexCount && j >= 0 && j < vertexCount) {
       matrix.set(i, j, true);
     }
   }
