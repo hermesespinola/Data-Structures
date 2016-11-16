@@ -1,18 +1,20 @@
-package graph.undirected;
+package graph.unweighted.directed;
 
-import matrix.TriangularMatrix;
+import graph.unweighted.UnweightedGraph;
 import list.ArrayLinearList;
+import matrix.ArrayMatrix;
+import graph.Vertex;
+import graph.Graph;
 import list.List;
-import graph.*;
 
-public class AdjacencyMatrix implements Graph<AMVertex> {
-  TriangularMatrix<Boolean> matrix;
+public class AdjacencyMatrix implements UnweightedGraph<AMVertex> {
+  ArrayMatrix<Boolean> matrix;
   AMVertex[] vertices;
   private int vertexCount; // matrix.size = vertexCount * vertexCount
 
   public AdjacencyMatrix(int vertexCount) {
     this.vertexCount = vertexCount;
-    this.matrix = new TriangularMatrix<Boolean>(vertexCount, false);
+    this.matrix = new ArrayMatrix<Boolean>(vertexCount, vertexCount);
     this.vertices = new AMVertex[vertexCount];
     for (int i = 0; i < vertexCount; i++) {
       vertices[i] = new AMVertex(i, this);
@@ -61,7 +63,7 @@ public class AdjacencyMatrix implements Graph<AMVertex> {
 
   public static void main(String[] args) {
     int vertexCount = 10;
-    Graph<AMVertex> graph = new AdjacencyMatrix(vertexCount);
+    UnweightedGraph<AMVertex> graph = new AdjacencyMatrix(vertexCount);
     graph.addEdge(0,0); // no self-loops allowed
     for (int i = 0; i < vertexCount; i += 2) {
       for (int j = 1; j < vertexCount; j += 2) {
@@ -75,10 +77,7 @@ public class AdjacencyMatrix implements Graph<AMVertex> {
   }
 }
 
-class AMVertex implements Vertex<AMVertex> {
-  int value;
-  AMVertex previous = null;
-  Integer distance = null;
+class AMVertex extends Vertex<AMVertex> {
   AdjacencyMatrix graph;
 
   public AMVertex(int value, AdjacencyMatrix graph) {
@@ -89,21 +88,6 @@ class AMVertex implements Vertex<AMVertex> {
     this.graph = graph;
   }
 
-  public void setPrevious(AMVertex v) {
-    this.previous = v;
-  }
-  public AMVertex previous() {
-    return this.previous;
-  }
-
-  public Integer distance() {
-    return this.distance;
-  }
-
-  public void setDistance(Integer d) {
-    this.distance = d;
-  }
-
   public List<AMVertex> adjacentVertices() {
     List<AMVertex> adjacencyList = new ArrayLinearList<>(graph.vertexCount() - 1);
     for (int j = 0; j < graph.vertexCount(); j++) {
@@ -112,10 +96,6 @@ class AMVertex implements Vertex<AMVertex> {
       }
     }
     return adjacencyList;
-  }
-
-  public int getValue() {
-    return this.value;
   }
 
   public String toString() {

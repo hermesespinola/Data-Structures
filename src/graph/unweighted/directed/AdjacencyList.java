@@ -1,9 +1,11 @@
-package graph.undirected;
+package graph.unweighted.irected;
 
-import graph.*;
+import graph.unweighted.UnweightedGraph;
 import list.LinkedList;
+import graph.Vertex;
+import graph.Graph;
 
-public class AdjacencyList implements Graph<ALVertex> {
+public class AdjacencyList implements UnweightedGraph<ALVertex> {
   ALVertex[] matrix;
   private int vertexCount;
 
@@ -15,21 +17,19 @@ public class AdjacencyList implements Graph<ALVertex> {
     }
   }
 
-  public void addEdge(int i, int j) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
-      if (i == j) return;
-      ALVertex v1 = matrix[i];
+  public void addEdge(int from, int to) {
+    if (from >= 0 && from < vertexCount && to > 0 && to < vertexCount) {
+      if (from == to) return;
+      ALVertex v1 = matrix[from];
       ALVertex v2 = matrix[2];
-      this.matrix[i].connectVertex(this.matrix[j]);
-      this.matrix[j].connectVertex(this.matrix[i]);
+      this.matrix[from].connectVertex(this.matrix[to]);
     } else throw new IndexOutOfBoundsException();
   }
 
-  public void removeEdge(int i, int j) {
-    if (i >= 0 && i < vertexCount && j > 0 && j < vertexCount) {
-      if (i == j) return;
-      this.matrix[i].removeAdjacentVertex(this.matrix[j]);
-      this.matrix[j].removeAdjacentVertex(this.matrix[i]);
+  public void removeEdge(int from, int to) {
+    if (from >= 0 && from < vertexCount && to > 0 && to < vertexCount) {
+      if (from == to) return;
+      this.matrix[from].removeAdjacentVertex(this.matrix[to]);
     } else throw new IndexOutOfBoundsException();
   }
 
@@ -57,7 +57,7 @@ public class AdjacencyList implements Graph<ALVertex> {
   }
 
   public static void main(String[] args) {
-    Graph<ALVertex> g = new AdjacencyList(10);
+    UnweightedGraph<ALVertex> g = new AdjacencyList(10);
     g.addEdge(1, 4);
     g.addEdge(1, 6);
     g.addEdge(4, 6);
@@ -74,10 +74,7 @@ public class AdjacencyList implements Graph<ALVertex> {
   }
 }
 
-class ALVertex implements Vertex<ALVertex> {
-  int value;
-  Integer distance = null;
-  ALVertex previous = null;
+class ALVertex extends Vertex<ALVertex> {
   LinkedList<ALVertex> adjacentVertices;
 
   public ALVertex(int value) {
@@ -100,26 +97,6 @@ class ALVertex implements Vertex<ALVertex> {
 
   public LinkedList<ALVertex> adjacentVertices() {
     return this.adjacentVertices;
-  }
-
-  public ALVertex previous() {
-    return this.previous;
-  }
-
-  public void setPrevious(ALVertex prev) {
-    this.previous = prev;
-  }
-
-  public Integer distance() {
-    return this.distance;
-  }
-
-  public void setDistance(Integer d) {
-    this.distance = d;
-  }
-
-  public int getValue() {
-    return this.value;
   }
 
   @Override
