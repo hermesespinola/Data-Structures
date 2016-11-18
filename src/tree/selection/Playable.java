@@ -15,14 +15,11 @@ public abstract class Playable<V extends Comparable<? super V>> implements Compa
   }
 
   public Playable<V> play(Playable<V> other, SelectionTree.Type type) {
-    if (this.value() == null) {
+    if (this.value() == null)
       return other;
-    }
-    if (other == null || other.value() == null) {
+    if (other == null || other.value() == null)
       return this;
-    } else {
-      return (this.compareTo(other) * type.value() > 0) ? this : other;
-    }
+    return (this.compareTo(other) * type.value() > 0) ? this : other;
   }
 
   public int compareTo(Playable<V> other) {

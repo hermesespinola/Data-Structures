@@ -20,6 +20,10 @@ public interface SelectionTree<P extends Comparable<? super P>> {
     }
   }
 
+  static int getParent(final int lowext, final int offset, final int n, final int child) {
+    return (child <= lowext) ? (child + offset)/2 - 1 : (child - lowext + n - 1) / 2 - 1;
+  }
+
   public static <T extends Comparable<? super T>> void tournamentSort(T[] in, T[] out, Type type) {
     WinnerTree<T> wt = new WinnerTree<T>(in, type);
 
