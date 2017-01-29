@@ -5,7 +5,7 @@ import node.KeyValueNode;
 import dict.OpenAddressingDict;
 
 @SuppressWarnings("rawtypes")
-public class DisjointSet<V> {
+public class ADTDisjointSet<V> {
   OpenAddressingDict<V, V> p; // array of parents
   OpenAddressingDict<V, Integer> rank; // rank of each set
   OpenAddressingDict<V, Integer> size; // size of each set
@@ -16,7 +16,7 @@ public class DisjointSet<V> {
   * @param n number of sets to initialize
   */
   @SuppressWarnings("unchecked")
-  public DisjointSet(V[] elements) {
+  public ADTDisjointSet(V[] elements) {
     p = new OpenAddressingDict<>(elements.length);
     rank = new OpenAddressingDict<>(elements.length);
     size = new OpenAddressingDict<>(elements.length);
@@ -97,7 +97,7 @@ public class DisjointSet<V> {
   }
 
   public static void main(String[] args) {
-    DisjointSet<String> ds = new DisjointSet<>(new String[] {"Lucio", "Chuck", "Chacalaca", "Tequila", "Olote", "Palabra", "Wassaaa", "chucha", "Lulu", "Batman"});
+    ADTDisjointSet<String> ds = new ADTDisjointSet<>(new String[] {"Lucio", "Chuck", "Chacalaca", "Tequila", "Olote", "Palabra", "Wassaaa", "chucha", "Lulu", "Batman"});
     ds.union("Chuck", "Batman");
     ds.union("Batman", "Lucio");
     ds.union("Chacalaca", "Tequila");

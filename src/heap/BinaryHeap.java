@@ -10,20 +10,20 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
   private V[] heap;
   private int length;
 
-  public BinaryHeap(Type Type) {
-    this(DEF_SIZE, Type);
+  public BinaryHeap(Type type) {
+    this(DEF_SIZE, type);
   }
 
   @SuppressWarnings("unchecked")
-  public BinaryHeap(int initialSize, Type Type) {
-    this.type = Type;
+  public BinaryHeap(int initialSize, Type type) {
+    this.type = type;
     this.heap = (V[]) new Comparable[initialSize];
     this.size = initialSize;
     this.length = 0;
   }
 
-  public BinaryHeap(V[] values, Type Type) {
-    this(DEF_SIZE + values.length, Type);
+  public BinaryHeap(V[] values, Type type) {
+    this(DEF_SIZE + values.length, type);
     for (V v : values) {
       this.insert(v);
     }

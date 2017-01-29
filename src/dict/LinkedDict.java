@@ -14,9 +14,8 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   public static final float DEF_LOAD = 0.75f;
 
   /**
-   * @param  initialSize the initial size of the table
-   * @param  loadFactor maximum amount of elements in the table
-   * @return      A hash table instance using LinkedList
+   * @param initialSize the initial size of the table
+   * @param loadFactor  maximum amount of elements in the table
   */
   @SuppressWarnings("unchecked")
   public LinkedDict(int initialSize, float loadFactor) {
@@ -30,15 +29,15 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   }
 
   /**
-   * @return      A hash table instance using LinkedList
+  * Initialize a dictionary with default values
   */
   public LinkedDict() {
     this(INIT_CAP, DEF_LOAD);
   }
 
   /**
-   * @param  k the key of the element
-   * @return      A value in the hash table
+   * @param k the key of the element
+   * @return  A value in the hash table
   */
   public Val getValue(Key k) {
     checkKey(k);
@@ -49,8 +48,8 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   }
 
   /**
-   * @param  k the key to check
-   * @return      true if the key is in the hash table, false otherwise
+   * @param  k  the key to check
+   * @return    true if the key is in the hash table, false otherwise
   */
   public boolean contains(Key k) {
     checkKey(k);
@@ -59,9 +58,8 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
 
   /**
    * maps the specified value in the hash table using the provided key.
-   * @param  k the key to map the value
-   * @param  v the value to map
-   * @return      The previous value mapped to that key, null if the key was not mapped already
+   * @param  k  the key to map the value
+   * @param  v  the value to map
   */
   public void add(Key k, Val v) {
     checkKey(k);
@@ -82,7 +80,7 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
 
   /**
    * @param  k  The key to remove
-   * @return      The value mapped to the key provided, null if the key is not in the table
+   * @return    The value mapped to the key provided, null if the key is not in the table
   */
   public Val remove(Key k) {
     checkKey(k);
@@ -135,28 +133,28 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   }
 
   /**
-   * @return if the table has no elements
+   * @return  if the table has no elements
   */
   public boolean isEmpty() {
     return n == 0;
   }
 
   /**
-   * @return      The number of elements in the table
+   * @return  The number of elements in the table
   */
   public int getSize() {
     return n;
   }
 
   /**
-   * @return      An integer that maps to an index in the table
+   * @return  An integer that maps to an index in the table
   */
   public int hash(Key k) {
     return k.hashCode() & 0x7FFFFFF % m;
   }
 
   /**
-   * @return      An interator containing the keys of the hash table
+   * @return  An interator containing the keys of the hash table
   */
   public ArrayList<Key> keys() {
     ArrayList<Key> list = new ArrayList<Key>();
@@ -169,7 +167,7 @@ public class LinkedDict<Key, Val> implements Dict<Key, Val> {
   }
 
   /**
-   * @return      An interator containing the values of the hash table
+   * @return  An interator containing the values of the hash table
   */
   public ArrayList<Val> values() {
     ArrayList<Val> list = new ArrayList<Val>();

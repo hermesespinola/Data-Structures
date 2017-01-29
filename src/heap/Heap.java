@@ -4,11 +4,9 @@ public interface Heap <V extends Comparable<? super V>> {
   public void clear();
   public void insert(V value);
   public boolean isEmpty();
-  public boolean isFull();
   public V peek();
   public V pop();
   public int size();
-  public String toString();
 
   public static enum Type {
     Max(1),

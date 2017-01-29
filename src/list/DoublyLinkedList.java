@@ -1,10 +1,11 @@
 package list;
 
-import java.util.ListIterator;
 import java.util.NoSuchElementException;
+import java.util.ListIterator;
 import node.DoublyLinkedNode;
+import java.lang.Iterable;
 
-public class DoublyLinkedList<T> implements List<T>  {
+public class DoublyLinkedList<T> implements List<T> {
   int size;
   DoublyLinkedNode<T> first;
   DoublyLinkedNode<T> last;
@@ -43,7 +44,7 @@ public class DoublyLinkedList<T> implements List<T>  {
     return getNode(index).getValue();
   }
 
-  private DoublyLinkedNode<T> getNode(int index) {
+  protected DoublyLinkedNode<T> getNode(int index) {
     DoublyLinkedNode<T> n = this.first;
     while (index > 0) {
       n = n.next();
@@ -85,6 +86,24 @@ public class DoublyLinkedList<T> implements List<T>  {
     return -1;
   }
 
+  public void remove(T x) {
+    DoublyLinkedNode<T> currentNode = this.first;
+    int i = 0;
+    while (currentNode.getValue() != null) {
+      if (currentNode.getValue() == x) {
+        if (currentNode.previous() == null) first = currentNode.next();
+        else currentNode.previous().setNext(currentNode.next());
+        if (currentNode.next() == null) last = currentNode.previous();
+        else currentNode.next().setPrevious(currentNode.previous());
+        size--;
+        return;
+      }
+      currentNode = currentNode.next();
+      i++;
+    }
+    return -1;
+  }
+
   public T remove(int index) {
     if (index < 0 || index >= size) {
       throw new IndexOutOfBoundsException();
@@ -96,6 +115,7 @@ public class DoublyLinkedList<T> implements List<T>  {
     else toRemove.next().setPrevious(toRemove.previous());
     size--;
     T r = toRemove.getValue();
+    toRemove = null;
     return r;
   }
 
