@@ -47,6 +47,7 @@ public class BinaryHeap<V extends Comparable<? super V>> implements Heap<V> {
       int left = (i + 1)*2 - 1;
       int right = left + 1;
       int path = left;
+
       if (heap[right] != null && this.heap[right].compareTo(this.heap[left]) * type.value() > 0)
         path = right;
       if (this.heap[path].compareTo(this.heap[i]) * type.value() > 0) {
